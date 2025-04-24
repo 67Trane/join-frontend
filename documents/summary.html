@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join 318</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../style/mobile-header.css" />
+  <link rel="stylesheet" href="../style/join-318.css" />
+  <link rel="stylesheet" href="../style/mobile-navbar-style.css" />
+  <link rel="stylesheet" href="../style/login.css" />
+  <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+  <script src="../javascript.js"></script>
+  <script src="../javascript/login.js"></script>
+  <script src="../javascript/includeHTML.js"></script>
+  <script src="../javascript/header.js"></script>
+  <script src="../javascript/summary.js"></script>
+</head>
+
+<body onload="init(), loadSummary()">
+  <section id="log-in"></section>
+  <section id="join-main-section">
+    <div  class="wrapper-header" w3-include-html="./mobile-header.html"></div>
+
+    <section class="background-container">
+      <div class="max-width contant-wrapper">
+        <div class="contant">
+      <div class="join-318-container">
+        <h1>Join 318</h1>
+        <div class="border-vertical"></div>
+        <p class="join-subtitle">Key Mertics at a Glance</p>
+        <div class="border-bottom"></div>
+      </div>
+      <div class="to-do-and-done">
+        <div class="to-do-box">
+          <img class="to-do-img" src="../assets/img/eddit-icon.svg" alt="" />
+          <div class="to-do-block">
+            <p id="to-do-counter" class="count-number"></p>
+            <p>To-Do</p>
+          </div>
+        </div>
+        <div class="to-do-box">
+          <img class="to-do-img" src="../assets/img/check-icon.svg" alt="" />
+          <div class="to-do-block">
+            <p id="done-counter" class="count-number"></p>
+            <p>Done</p>
+          </div>
+        </div>
+      </div>
+      <div class="deadline-container">
+        <div class="arrow-urgent-box">
+        <img class="arrow-up-icon" src="../assets/img/arrow-up-icon.svg" alt="Arrow-img" />
+        <div class="urgent-box">
+          <p id="urgent-counter" class="count-number"></p>
+          <p>Urgent</p>
+        </div>
+      </div>
+        <div class="vertical-border"></div>
+        <div class="deadline-box">
+          <p><b>October 16, 2022</b></p>
+          <p>Upcoming Deadline</p>
+        </div>
+      </div>
+      <div class="task-boxes-container">
+        <div class="tasks-counter-box">
+          <p id="tasks-in-board-counter" class="count-number"></p>
+          <p>Task in <br />Board</p>
+        </div>
+        <div class="tasks-counter-box">
+          <p id="tasks-in-progress-counter" class="count-number"></p>
+          <p>Task in <br />Progress</p>
+        </div>
+        <div class="tasks-counter-box">
+          <p id="awaiting-feedback-counter" class="count-number"></p>
+          <p>Awaiting <br />feedback</p>
+        </div>
+      </div>
+    </div>
+    <div class="greet-container">
+      <h5 id="greeting"></h5>
+      <h6 id="greet-name"></h6>
+    </div>
+  </div>
+    </section>
+    <div w3-include-html="./mobile-navbar.html"></div>
+  </section>
+</body>
+
+</html>

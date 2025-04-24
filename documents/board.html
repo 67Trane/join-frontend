@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/board.css">
+    <link rel="stylesheet" href="../style.css">
+    <script src="../javascript/includeHTML.js"></script>
+    <script src="../javascript/board.js"></script>
+    <script src="../javascript.js"></script>
+    <script src="../javascript/board-render-cardinfos.js"></script>
+    <script src="../javascript/board-to-summary.js"></script>
+    <script src="../javascript/drag-and-drop.js"></script>
+    <script src="../javascript/board-render-html.js"></script>
+    <script src="../javascript/header.js"></script>
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+    <title>Board</title>
+</head>
+
+
+<body onload="initBoard()" id="body">
+    <div class="background-grey d-none" id="background-grey"></div>
+    <div class="wrapper-header" w3-include-html="./mobile-header.html"></div>
+
+
+
+
+    <div class="content-wrap">
+        <div class="top-wrapper">
+            <div class="top-section">
+                <h1 class="top-section-title">Board</h1>
+                <img src="../assets/img/plus add task mobile.svg" alt="" class="add-task-btn"
+                    onclick="openAddTask('todo')">
+            </div>
+            <div class="search-wrap">
+           
+                <div class="search-section">
+                    <input type="text" name="" id="search-field" class="input-field" onfocus="searchCard()">
+
+                    <img src="../assets/img/Vector 3.svg" alt="" class="seperator">
+                    <button class="search-btn"><img src="../assets/img/search.svg" alt=""></button>
+                </div>
+                <button class="add-task" onclick="openAddTask('todo')">Add task <img src="../assets/img/plus_white.svg"
+                        alt="" class="plus-img"></button>
+            </div>
+        </div>
+        <div class="content-container">
+            <div class="progress-container" id="todo" ondrop="moveTo('todo')" ondragleave="removeHighlight('todo')"
+                ondragover="allowDrop(event); highlight('todo')">
+                <div class="section-title">
+                    <h3>To do</h3>
+                    <img src="../assets/img/plus button mobile.svg" alt="" class="add-btn"
+                        onclick="openAddTask('todo')">
+                </div>
+                <div class="all-tasks" id="todo-card">
+                    <div class="to-do-empty d-none" id="todo-empty">
+                        <p>No tasks To do</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-container" id="inprogress" ondrop="moveTo('inprogress')"
+                ondragleave="removeHighlight('inprogress')" ondragover="allowDrop(event); highlight('inprogress')">
+                <div class="section-title">
+                    <h3>In progress</h3>
+                    <img src="../assets/img/plus button mobile.svg" alt="" class="add-btn"
+                        onclick="openAddTask('inprogress')">
+                </div>
+                <div class="all-tasks" id="inprogress-card">
+                    <div class="to-do-empty d-none" id="inprogress-empty">
+                        <p>No tasks To do</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="progress-container" id="awaitfeedback" ondrop="moveTo('awaitfeedback')"
+                ondragleave="removeHighlight('awaitfeedback')"
+                ondragover="allowDrop(event); highlight('awaitfeedback')">
+                <div class="section-title">
+                    <h3>Await feedback</h3>
+                    <img src="../assets/img/plus button mobile.svg" alt="" class="add-btn"
+                        onclick="openAddTask('awaitfeedback')">
+                </div>
+                <div class="all-tasks" id="awaitfeedback-card">
+                    <div class="to-do-empty d-none" id="awaitfeedback-empty">
+                        <p>No tasks To do</p>
+                    </div>
+                </div>
+                <div class="tickets">
+
+
+                </div>
+            </div>
+            <div class="progress-container" id="done" ondrop="moveTo('done')" ondragleave="removeHighlight('done')"
+                ondragover="allowDrop(event); highlight('done')">
+                <div class="section-title">
+                    <h3>Done</h3>
+                </div>
+                <div class="all-tasks" id="done-card">
+                    <div class="to-do-empty d-none" id="done-empty">
+                        <p>No tasks To do</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div w3-include-html="./mobile-navbar.html"></div>
+
+</body>
+
+
+</html>

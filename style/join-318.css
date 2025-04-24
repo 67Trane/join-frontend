@@ -1,0 +1,202 @@
+.background-container{
+  background-color: #f6f7f8;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+.contant-wrapper{
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.contant{
+  flex: 1;
+  max-width: 640px;
+}
+
+.join-318-container{
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+  margin-left: 16px;
+  margin-bottom: 56px;
+  gap: 8px;
+  position: relative;
+}
+h1{
+  font-size: 48px;
+  font-weight: 700;
+  width: 203px;
+  height: 56px;
+}
+.border-vertical{
+  border-left: 3px solid #29ABE2;
+  height: 40px;
+  margin-right: 16px;
+  display: none;
+}
+.join-subtitle{
+  font-size: 20px;
+  position: relative;
+}
+.border-bottom{
+  position: relative;
+  margin-bottom: 32px;
+  bottom: 0;
+  width: 90px; 
+  border-bottom: 3px solid #29ABE2; 
+  border-radius: 3px;
+}
+.to-do-and-done{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 16px;
+  margin-right: 16px;
+  gap: 16px;
+}
+.to-do-box{
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 20px;
+  gap: 10px;
+}
+.to-do-box:hover,
+.deadline-container:hover,
+.tasks-counter-box:hover{
+  background-color: #091931;
+  color: white;
+}
+.to-do-img{
+  height: 40px;
+  width: 40px;
+}
+.to-do-block{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.deadline-container{
+  background-color: white;
+  display: flex;
+  
+  align-items: center;
+  text-align: center;
+  height: 120px;
+  border-radius: 20px;
+  gap: 16px;
+  margin: 24px 16px;
+}
+
+.arrow-urgent-box{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: auto;
+}
+
+.urgent-box{
+  margin-right: 37px;
+}
+
+.arrow-up-icon{
+  width: 40px;
+  height: 40px;
+}
+.vertical-border{
+  height: 68px;
+  border: 1px solid #d1d1d1;
+  border-radius: 2px;
+  margin: auto;
+}
+
+.deadline-box{
+  margin: auto;
+}
+
+.task-boxes-container{
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+  margin-right: 16px;
+  margin-left: 16px;
+}
+.tasks-counter-box{
+  background-color: white;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  border-radius: 20px;
+}
+
+.count-number{
+  font-size: 40px;
+  font-weight: 600px;
+}
+
+.max-width{
+  max-width: 1920px;
+  width: 100%
+}
+
+.greet-container{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 215px;
+  flex: 1;
+}
+
+@media (min-width:1025px){
+  .background-container{
+    padding-left: 232px;
+  }
+  .join-318-container{
+    flex-direction: row;
+    align-items: center;
+  }
+  .border-bottom{
+    display: none;
+  }
+  .border-vertical{
+    display: block;
+  }
+  h5{
+    display: block;
+    font-size: 80px;
+  }
+  h6{
+    font-size: 80px;
+    color: #29ABE2;
+  }
+}
+
+@media (max-width:1024px){
+  .greet-container{
+    display: none;
+  }
+}
+
+@media (max-height:835px){
+  .background-container{
+    margin-bottom: 80px;
+    height: 100%;
+    width: 100%;
+  }
+  .task-boxes-container{
+    padding-bottom: 16px;
+  }
+}

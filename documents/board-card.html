@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../javascript/board-card.js"></script>
+    <link rel="stylesheet" href="../style/board-card.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+    <title>Board Fullscreen Card</title>
+
+</head>
+
+<body onload="initBoardCard()">
+    <div class="conten-container" id="board-card-content-container">
+        <div class="head">
+            <div class="pill">User Story</div>
+            <img class="close-btn" src="../assets/img/Close.svg" alt="" onclick="parent.closeWindow('card-infos')">
+        </div>
+        <div class="title">
+            <h2 id="title">Kochwelt Page & Recipe Recommender</h2>
+        </div>
+        <div class="note">
+            <p id="description">Build start page with recipe recommendation.</p>
+        </div>
+        <div class="date">
+            <p>Due date: </p>
+            <p id="date"> 10/05/2023</p>
+        </div>
+
+        <div class="priority">
+            <p>Priority: </p>
+            <div class="priority-level d-none" id="medium"> 
+                <p>Medium</p>
+                <img src="../assets/img/Capa 2.svg" alt="">
+            </div>
+            <div class="priority-level d-none" id="urgent">
+                <p>Urgent</p>
+                <img src="../assets/img/urgent.svg" alt="" >
+            </div>
+
+            <div class="priority-level d-none" id="low">
+                <p>Low</p>
+                <img src="../assets/img/low.svg" alt="">
+
+            </div>
+        </div>
+
+        <div class="assigned-to" id="assigned-to">
+            <p>Assigned To: </p>
+            
+        </div>
+
+        <div class="subtasks" id="subtasks">
+            <p>Subtasks</p>
+           
+        </div>
+    </div>
+</body>
+
+</html>

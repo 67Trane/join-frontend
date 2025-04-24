@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Log in</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style/login.css" />
+  <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+  <script src="./javascript.js"></script>
+  <script src="./javascript/login.js" defer></script>
+</head>
+
+<body onload="start()">
+  <div id="join-logo-overlay" class="overlay">
+  </div>
+  <section id="log-in" class="log-in-section hidden">
+    <img id="join-image-id" class="log-in-join-logo" src="./assets/img/join-icon.svg" alt="" />
+    <div class="log-in-container">
+      <h2 class="log-in-title">Log in</h2>
+      <div class="border-bottom-log-in"></div>
+      <form onsubmit="logIn(event)">
+        <div class="input-container">
+          <input id="user-email" class="input-field email-input" type="email" placeholder="Email" />
+        </div>
+        <div class="input-container">
+          <input id="user-password" class="input-field password-input" type="password" placeholder="Password"
+            onkeyup="changePasswordIcon('user-password','change-password-icons')" />
+          <span id="change-password-icons" class="password-eye-open d-none"></span>
+        </div>
+        <div id="wrong-log-in" class="font-color-red"></div>
+        <div class="check-box-container check-box">
+          <input type="checkbox" id="remember-me-box" onchange="checkRememberMe()" />
+          <label class="label-margin-right" for="remember-me-box">Remember me</label>
+        </div>
+        <div class="log-in-button-container">
+          <button class="button log-in-button">Log in</button>
+          <button type="button" onclick="logInAsGuest()" class="button guest-log-in">Guest Log in</button>
+        </div>
+      </form>
+
+    </div>
+    <div class="log-in-sign-up-container">
+      <p>Not a Join user?</p>
+      <button onclick="loadSignUp()" class="log-in-sign-up-button">sign up</button>
+    </div>
+    <div class="log-in-link-container">
+      <a id="privacy-link" onclick="sendToPrivacyPolicy()" href="#">Privacy Policy</a>
+      <a id="legal-link" onclick="sendTolegalNotice()" href="#">Legal notice</a>
+    </div>
+  </section>
+  <section id="sign-up" class="log-in-section d-none"></section>
+</body>
+
+</html>

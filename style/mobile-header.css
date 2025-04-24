@@ -1,0 +1,101 @@
+
+.wrapper-header{
+  box-shadow: 0px 8px 4px -5px rgba(0,0,0,0.30);
+  width: 100vw;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  position: fixed;
+  z-index: 2;
+}
+
+header{
+  max-width: 1920px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 16px;
+  padding-right: 16px;
+  
+  position: fixed;
+  background-color: white;
+}
+header span{
+  display: none;
+}
+.header-join-icon{
+  height: 39px;
+  width: 32px;
+}
+
+.help-account-wrapper{
+  display: flex;
+  gap: 24px;
+}
+
+.help-icon{
+  display: none;
+}
+
+.header-user-icon-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #2A3647;
+  border-radius: 50%;
+}
+
+.header-user-icon-container:hover{
+  cursor: pointer;
+}
+
+.headline-pop-up{
+  width: 128px;
+  height: 148px;
+  background-color: #2A3647;
+  position: absolute;
+  top: 68px;
+  right: -150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  border-radius: 15px 0px 15px 15px;
+  opacity: 0; /* Anfangs nicht sichtbar */
+  transition: right 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.headline-pop-up a{
+  color: white;
+  text-decoration: none;
+}
+
+.headline-pop-up.active {
+  right: 10px; /* Endposition innerhalb des Bildschirms */
+  opacity: 1; /* Voll sichtbar */
+}
+
+.font-color-blue{
+  color: #29ABE2;
+}
+
+@media (min-width:1025px){
+  header span{
+    display: block;
+  }
+  .header-join-icon{
+    display: none;
+  }
+  .help-icon{
+    display: block;
+  }
+  .pop-up-help{
+    display: none;
+  }
+}

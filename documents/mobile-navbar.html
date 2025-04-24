@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../style/mobile-navbar-style.css" />
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+    <script src="/javascript.js"></script>
+  </head>
+
+  <body>
+    <div class="test-container">
+      <div class="mobile-navbar">
+        
+        <img class="join-logo-sidebar" src="../assets/img/Join-logo-white.svg" alt="">
+        <div id="navbar-links" class="navbar-links-box">
+        <a id="summary" class="navbar-icon-container" href="./summary.html?icon=summary">
+          <img
+            class="navbar-icon"
+            src="../assets/img/summary-mobile-icon.png"
+            alt=""
+          />Summary
+        </a>
+
+        <a id="board" class="navbar-icon-container" href="./board.html?icon=board">
+          <img
+            class="navbar-icon"
+            src="../assets/img/board-mobile-icon.png"
+            alt=""
+          />Board
+        </a>
+
+        <a id="addtask" class="navbar-icon-container" href="./addtask.html?icon=addtask">
+          <img
+            class="navbar-icon"
+            src="../assets/img/add-task-moblie-icon.png"
+            alt=""
+          />Add Tasks</a
+        >
+
+        <a id="contacts" class="navbar-icon-container" href="./contacts.html?icon=contacts">
+          <img
+            class="navbar-icon"
+            src="../assets/img/contacts-mobile-icon.png"
+            alt=""
+          />Contacts
+        </a>
+          </div>
+        <div class="sidebar-link-container">
+            <a id="privacy" href="#" onclick="sendToPrivacyPolicyFromNavbar()">Privacy Policy</a>
+            <a id="legal" href="#" onclick="sendTolegalNoticeFromNavbar()">Legal notice</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style/contact.css">
+    <title>Contacts</title>
+    <!-- Google Fonts Embed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap"
+        rel="stylesheet">
+    <script src="../javascript.js"></script>
+    <script src="../javascript/includeHTML.js"></script>
+    <script src="../javascript/header.js"></script>
+</head>
+
+<body onload="initializeContactList(), initializeUsers()">
+    <div class="wrapper-header" w3-include-html="./mobile-header.html"></div>
+    <main>
+        <div class="desk-btn-wrapper">
+            <div class="add-btn-desk" onclick="openAddContactDialog()">
+                Add new Contact 
+                <img src="../assets/img/person_add.svg"></div>
+        </div>
+        <!-- Contact List -->
+        <section class="contact-list" id="contact-list">
+            <div class="contact-mobile-header">
+                <h2>Contacts</h2>
+                <h3>Better with a team!</h3>
+                <div class="seperator-card"></div>
+            </div>
+            <div class="contact-list-wrapper overlay-slide-in" id="list-content-outter">
+                <!-- Dynamischer Inhalt hier eingefügt -->
+            </div>
+        </section>
+        <!-- End of Contact List -->
+
+        <!-- Detail Section -->
+        <section class="contact-detail d-none mobile" onclick="hideEditBox()" id="contact-detail">
+            <div class="contact-overlay container" id="detail"></div>
+            <div class="add-button d-none" id="edit-button" onclick="showEditBox(event)">
+                <img src="../assets/img/more_vert.svg">
+            </div>
+            <!-- Edit / Delete mobile -->
+            <div class="edit-box" id="edit-box" onclick="stopPropagation(event)">
+                <div class="edit-row" onclick="openEditContactDialog(currentId)">
+                    <img src="../assets/img/edit-small.svg">
+                    <p>Edit</p>
+                </div>
+                <div class="edit-row" onclick="deleteContact(currentId)">
+                    <img src="../assets/img/delete-small.svg">
+                    <p>Delete</p>
+                </div>
+            </div>
+        </section>
+        <!-- End of Detail section -->
+        <div class="contact-overlay-desk container">
+            <div class="contact-desk-header">
+                <h2>Contacts</h2>
+                <div class="seperator-card-desk"></div>
+                <h3>Better with a team!</h3>
+            </div>
+            <div class="contact-overlay-desk-content">
+                <div class="contact-mobile-header-detail" id="mobile-overlay-detail">
+                    <h2>Contacts</h2>
+                    <div class="seperator-card-desk"></div>
+                    <h3>Better with a team!</h3>
+                </div>
+                <div id="detail-desk"></div>
+            </div>
+        </div>
+
+        <!-- Add Contact Card (Overlay)-->
+        <section class="contact-card-wrapper d-none" id="add-contact">
+            
+        </section>
+        <!-- End of Add Contact Card (Overlay)-->
+
+        <!-- Floating Buttons Mobile -->
+        <div class="add-button" id="add-button" onclick="openAddContactDialog()">
+            <img src="../assets/img/person_add.svg">
+        </div>
+
+        <!-- Start of Edit Contact Card (Overlay) -->
+        <section class="contact-card-wrapper d-none" id="edit-contact">
+        </section>
+        <!-- End of Edit Contact Card (Overlay) -->
+
+
+    </main>
+    <div w3-include-html="mobile-navbar.html"></div>
+    <script src="../javascript/contact-db.js"></script>
+    <script src="../javascript/assigned.js"></script>
+    <script src="../javascript/contact-validation.js"></script>
+    <script src="../javascript/contact.js"></script>
+    <script src="../javascript/contact_templates.js"></script>
+</body>
+
+</html>

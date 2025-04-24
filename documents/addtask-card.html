@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/addtask-card.css">
+    <link rel="stylesheet" href="../style.css">
+    <script src="../javascript/addtask-render-html.js"></script>
+    <script src="../javascript/addtask.js"></script>
+    <script src="../javascript/includeHTML.js"></script>
+    <script src="../javascript.js"></script>
+    <script src="../javascript/dropdown.js"></script>
+    <script src="../javascript/addtask-getinfos.js"></script>
+    <script src="../javascript/header.js"></script>
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+    <title>Add Task</title>
+</head>
+
+<body onload="onload()">
+    <div class="success-container d-none" id="success-container">
+        <div class="success" id="success">
+            <span>Task successfully created</span>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="title-section">
+            <span class="title">Add Task</span>
+            <img src="../assets/img/Close.svg" class="x-close" alt="" onclick="parent.closeWindow('whole-addtask-card')">
+        </div>
+        <div class="content-container">
+            
+            <div class="left-part">
+                <div class="input-title-section">
+                    <p onclick="getAssignedto()">Title<span class="red">*</span></p>
+                    <input type="text" name="" id="input-title" class="inputfield" required placeholder="Enter a title"
+                        onkeyup="inputTyping()">
+                    <p class="red-text d-none" id="title-required">This field is required</p>
+                </div>
+
+                <div class="description-section">
+                    <p>Description</p>
+                    <textarea name="description" id="text-area" placeholder="Enter a Description"
+                        class="description-area"></textarea>
+                </div>
+
+                <div class="assigned-to-section">
+                    <p>Assigned to</p>
+                    <div class="dropdown-wrap">
+                        <div class="search-bar-section" id="contacts-searchfield">
+                            <div class="search">
+                                <p id="assigne-placeholder">Select contacts to assign</p>
+                                <div class="d-none" id="search-container">
+                                    <span class="prefix">An:</span>
+                                    <input type="search" id="myInput" placeholder="" class="searchfield"
+                                        onkeyup="filterFunction()">
+                                </div>
+                            </div>
+                            <img src="../assets/img/arrow_drop_down.svg" alt="" id="arrow-down" class="arrow">
+                        </div>
+
+                        <div class="contacts-imges" id="contacts-imges">
+                        </div>
+                        <div class="contacts d-none" id="all-contacts">
+                            <span id="noContact" class="nocontact d-none">Kein Ergebniss</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="separator-div"></div>
+<div class="right-part">
+            <div class="date-section">
+                <p>Due date<span class="red">*</span></p>
+                <input type="date" class="date" id="input-date" onchange="getDate()" required min="1900-01-01"
+                    max="2030-12-31">
+                <p class="red-text d-none" id="date-required">This field is required</p>
+            </div>
+
+            <div class="prio-section">
+                <p>Prio</p>
+                <div class="all-prios">
+                    <div class="prio" onclick="selectedPrio('urgent')" id="urgent">
+                        <p>Urgent</p>
+                        <img src="../assets/img/urgent.svg" alt="" id="urgent-img">
+                    </div>
+                    <div class="prio" onclick="selectedPrio('medium')" id="medium">
+                        <p>Medium</p>
+                        <img src="../assets/img/Capa 2.svg" alt="" id="medium-img">
+                    </div>
+                    <div class="prio" onclick="selectedPrio('low')" id="low">
+                        <p>low</p>
+                        <img src="../assets/img/low.svg" alt="" id="low-img">
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-section">
+                <p>Category<span class="red">*</span></p>
+                <div class="dropdown-wrap">
+                    <div class="search-bar-section" id="input-category">
+                        <span class="prefix" id="select-task">Select task category</span>
+                        <img src="../assets/img/arrow_drop_down.svg" alt="" class="arrow">
+                    </div>
+                    <div class="categorys d-none" id="categorys">
+                        <p id="tech" onclick="taskSelected('tech')">Technical Task</p>
+                        <p id="user" onclick="taskSelected('user')">User Story</p>
+                    </div>
+                    <p class="red-text d-none" id="category-required">This field is required</p>
+                </div>
+            </div>
+
+            <div class="subtasks-section">
+                <p>Subtasks</p>
+                <div class="dropdown-wrap">
+                    <div class="search-bar-section" id="subtask-search-bar">
+
+                        <input type="search" id="input-subtask" placeholder="Add new subtask" class="searchfield"
+                            onfocus="addSubtask()">
+                        <img src="../assets/img/add.svg" alt="" class="" id="add-img">
+                        <div class="ok-notok-section d-none" id="ok-notok-section">
+                            <img src="../assets/img/Close.svg" alt="" onclick="cancelSubtaskInput()">
+                            <img src="../assets/img/Vector 3.svg" alt="" class="separator">
+                            <img src="../assets/img/check.svg" alt="" style="filter: invert();"
+                                onclick="addToSubtask()">
+                        </div>
+                    </div>
+                    <p class="red-text d-none" id="subtask-required">You cant add a empty task</p>
+                    <div class="subtasks" id="subtasklist">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="create-task-container">
+            <p style="z-index: -1;"><span class="red">*</span>This field is required</p>
+            <div class="buttons">
+            <button class="clear-btn" onclick="clearAllFields()">Clear <img src="../assets/img/Close.svg"
+                alt="" id="clear-img"></button>
+            <button class="create-btn" onclick="getAllInfos()">Create Task <img src="../assets/img/check.svg"
+                    alt=""></button>
+                </div>
+        </div>
+    </div>
+</body>
+
+</html>

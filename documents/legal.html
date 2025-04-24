@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../style/mobile-header.css" />
+    <link rel="stylesheet" href="../style/mobile-navbar-style.css" />
+    <link rel="stylesheet" href="../style/legal.css" />
+    <link rel="shortcut icon" href="../assets/img/join_favicon.svg" type="image/x-icon">
+
+    <script src="../javascript.js"></script>
+    <script src="../javascript/includeHTML.js"></script>
+    <script src="../javascript/header.js"></script>
+  </head>
+  <body onload="init()">
+    <div class="wrapper-header" w3-include-html="./mobile-header.html"></div>
+    <div class="main-contant-container">
+      <div class="headline-container">
+        <h2>Legal Notice</h2>
+        <img onclick="moveToLastPage()" class="cursor" src="../assets/img/arrow-left-line.svg" alt="">
+      </div>
+      <h3>Imprint</h3>
+      <ul>
+        <li>Mehmet Deliaci, Denis Dudda, Kai Schulz</li>
+        <li>Altenweg 47</li>
+        <li>75228 Ispringen</li>
+      </ul>
+      <h3>Exploring the Board</h3>
+      <span>Email:<a href="mailto:info@sparrowmedia.de">info@sparrowmedia.de</a></span>
+        <p><b>Acceptance oftermes</b><br>
+          By accessing and using Join (Product), you acknowledge and agree to the following terms and conditions, and any policies, guidelines, or amendments thereto that may be presented to you from time to time. We, the listed students, may update or change the terms and conditions from time to time without notice.
+      </p>
+        <p><b>Scope and ownership of the product</b><br>
+          Join has been developed as part of a student group project in a web development bootcamp at the Developer Akademie GmbH. It has an educational purpose and is not intended for extensive personal & business usage. As such, we cannot guarantee consistent availability, reliability, accuracy, or any other aspect of quality regarding this Product. 
+          <br>
+          <br>
+          The design of Join is owned by the Developer Akademie GmbH. Unauthorized use, reproduction, modification, distribution, or replication of the design is strictly prohibited.
+      </p>
+        <p><b>Proprietary rights</b><br>
+              Aside from the design ownedby Developer
+        </p>
+    </div>
+    <div w3-include-html="./mobile-navbar.html"></div>
+  </body>
+</html>
