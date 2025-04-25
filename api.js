@@ -88,43 +88,12 @@ async function loadContacts() {
     },
   })
     .then((response) => response.json())
-    .then((result) => renderContacts(result))
+    .then((result) => {
+      renderContacts(result);
+      return result;
+    })
     .catch((error) => console.log(error));
 }
-
-/**
- * Fetches tasks from the Firebase database and populates the `taskDb` array.
- *
- * @async
- * @function getTasks
- * @param {string} path - The path to the Firebase database endpoint.
- * @returns {Promise<void>} - A promise that resolves when tasks are fetched and added to `taskDb`.
- */
-// async function getTasks(path) {
-//   let taskArray = [];
-
-//   try {
-//     let response = await fetch(BASE_URL + path, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: TOKEN ? `Token ${TOKEN}` : "",
-//       },
-//     });
-//     let data = await response.json();
-//     if (data) {
-//       taskArray = Object.entries(data).map(([key, value]) => {
-//         return {
-//           firebaseid: key,
-//           ...value,
-//         };
-//       });
-//       taskDb.push(...taskArray);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// }
 
 async function getData(path) {
   try {
@@ -155,51 +124,6 @@ async function updateTask(id, payload) {
     body: JSON.stringify(payload),
   });
 }
-
-// /**
-//  * Updates the task data on the server.
-//  */
-// async function updateServer() {
-//   await fetch(BASE_URL + "addTask/" + cardId + "/", {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
-//     },
-//     body: JSON.stringify(tasks),
-//   });
-// }
-
-// /**
-//  * Updates the server with the provided subtask status.
-//  *
-//  * @param {Object} task - The subtask object to update on the server.
-//  */
-// async function updateServer(task) {
-//   try {
-//     await fetch(BASE_URL + "addTask/" + clickedCardId + "/", {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: TOKEN ? `Token ${TOKEN}` : "",
-//       },
-//       body: JSON.stringify(task),
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// async function updateServer(task, alltask) {
-//   await fetch(BASE_URL + "addTask/" + task + "/", {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
-//     },
-//     body: JSON.stringify(alltask),
-//   });
-// }
 
 /**
  * Deletes a task from the server.
@@ -243,22 +167,6 @@ async function loadTasks() {
   }
 }
 
-// async function loadTasks2() {
-//   await fetch(BASE_URL + "addTask/", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
-//     },
-//   })
-//     .then((response) => response.json())
-//     .then((result) => {
-//       let values = result && typeof result === "object" ? Object.values(result) : "";
-      
-//       checkTask(values);
-//     });
-// }
-
 async function getCurrentUser() {
   try {
     let response = await fetch(BASE_URL + "curent-user", {
@@ -275,7 +183,7 @@ async function getCurrentUser() {
   }
 }
 
-async function pushData(inputData) {
+async function pushContact(inputData) {
   inputData["user"] = [userDb[0].user];
   try {
     let response = await fetch(BASE_URL + "contacts/", {
@@ -289,6 +197,7 @@ async function pushData(inputData) {
     if (!response.ok) {
       throw new Error("Error pushing data");
     }
+
     let responseData = await response.json();
     let newContactId = responseData.name;
     closeAddContactDialog();
@@ -469,7 +378,7 @@ async function updateAccount() {
  * @throws {Error} Throws an error if the network request fails.
  */
 function loadUserName() {
-  fetch(currentUserURL)
+  fetch(BASE_URL + "curent-user/")
     .then((response) => response.json())
     .then((result) => {
       renderUserName(result[0]);
@@ -477,24 +386,24 @@ function loadUserName() {
     .catch((error) => console.log("Error fetching datas:", error));
 }
 
-async function createStatusAmount() {
-  let amounts = {
-    awaitfeedback: 0,
-    done: 0,
-    inprogress: 0,
-    todo: 0,
-    urgent: 0,
-  };
-  fetch(BASE_URL + "Status/1/", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(amounts),
-  });
-}
+// async function createStatusAmount() {
+//   let amounts = {
+//     awaitfeedback: 0,
+//     done: 0,
+//     inprogress: 0,
+//     todo: 0,
+//     urgent: 0,
+//   };
+//   fetch(BASE_URL + "Status/1/", {
+//     method: "PUT",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(amounts),
+//   });
+// }
 
 async function postCurrentUser(userName, userEmail, token, userid) {
   try {
-    const response = await fetch(currentUserURL + "1/", {
+    const response = await fetch(BASE_URL + "curent-user/" + "1/", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nameIn: `${userName}`, emailIn: `${userEmail}`, token: `${token}`, user: `${userid}` }),
@@ -552,30 +461,11 @@ async function guestLogin(retried = false) {
   const currentUser = await res.json();
   localStorage.setItem("token", currentUser.token);
   await postCurrentUser(currentUser.username, currentUser.email, currentUser.token, currentUser.user);
-  postNewAccount(currentUser.username, currentUser.email);
+  postNewAccount(currentUser.username, currentUser.email, currentUser);
   window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentUser.username)}`;
 }
 
-async function setNoCurrentUser() {
-  let userName = "Guest";
-  if (userName) {
-    document.getElementById("wrong-log-in").classList.add("d-none");
-  }
-  try {
-    const response = await fetch(currentUserURL + "1/", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nameIn: `${userName}`, emailIn: "" }),
-    });
-    if (!response.ok) {
-      throw new Error("Error posting data");
-    }
-  } catch (error) {
-    console.error("Error posting no current user:", error);
-  }
-}
-
-async function pushData(inputData) {
+async function registerUser(inputData) {
   try {
     let response = await fetch(BASE_URL + "registration/", {
       method: "POST",
@@ -588,49 +478,45 @@ async function pushData(inputData) {
     if (!response.ok) {
       throw new Error("Error pushing data");
     }
-    postNewAccount(currentUser.username, currentUser.email);
+    postNewAccount(currentUser.username, currentUser.email, currentUser);
     initialize();
   } catch (error) {
     console.log("Error pushing data:", error);
   }
 }
 
-async function postNewAccount(newName, newEmail) {
-  await fetch(BASE_URL + "contacts/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: currentUser.token ? `Token ${currentUser.token}` : "",
-    },
-
-    body: JSON.stringify({
-      nameIn: `${newName}`,
-      emailIn: `${newEmail}`,
-      phoneIn: "0",
-      isUser: true,
-      color: "blue",
-      user: [+currentUser.user],
-    }),
-  });
-  renderSuccessfully();
-  setTimeout(() => {
-    window.location.href = "./index.html";
-  }, 2000);
+async function postNewAccount(newName, newEmail, newUser) {
+  try {
+    await fetch(BASE_URL + "contacts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: newUser.token ? `Token ${newUser.token}` : "",
+      },
+      body: JSON.stringify({
+        nameIn: `${newName}`,
+        emailIn: `${newEmail}`,
+        phoneIn: "0",
+        isUser: true,
+        color: "blue",
+        user: [+newUser.user],
+      }),
+    });
+    debugger;
+    renderSuccessfully();
+    setTimeout(() => {
+      window.location.href = "./index.html";
+    }, 2000);
+  } catch (error) {
+    console.error(error);
+  }
+  debugger;
 }
 
 async function updateStatus(nr) {
-  fetch(BASE_URL + "Status/1/", {
+  await fetch(BASE_URL + "Status/1/", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(nr),
   });
-}
-
-async function loadAccounts() {
-  await fetch(BASE_URL + "Status/")
-    .then((response) => response.json())
-    .then((result) => {
-      amounts = result[0];
-    })
-    .catch((error) => console.log("Error fetching data:", error));
 }

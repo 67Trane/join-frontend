@@ -1,37 +1,38 @@
-// let currentUserURL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/curent-user.json"
-let currentUserURL = "http://127.0.0.1:8000/api/curent-user/"
+
 
 const params = new URLSearchParams(window.location.search);
-let currentName = '';
-const icon = params.get('icon');
-const notAMember = params.get('userId');
+let currentName = "";
+const icon = params.get("icon");
+const notAMember = params.get("userId");
 let togglePopUp = false;
 
 /**
  * Initializes the page by including HTML components and loading user-related data.
  * This function includes HTML components, then loads the account name, adjusts navigation links,
  * changes the navbar color, and loads the user's name.
- * 
+ *
  * @async
  * @throws {Error} Throws an error if including HTML components fails.
  */
 function init() {
-    includeHTML().then(() => {
-    noMemberLink();
-    changeNavbarColor();
-    loadUserName();
-  }).catch((error) => {
-    console.error("Error including HTML:", error);
-  });
+  includeHTML()
+    .then(() => {
+      noMemberLink();
+      changeNavbarColor();
+      loadUserName();
+    })
+    .catch((error) => {
+      console.error("Error including HTML:", error);
+    });
 }
 
 /**
  * Loads and displays the current user's name in the greeting element.
- * If `currentName` is defined, it updates the inner HTML of the element with the ID 'greet-name' 
+ * If `currentName` is defined, it updates the inner HTML of the element with the ID 'greet-name'
  * to show the user's name.
  */
 function loadAccountName() {
-  greetId = document.getElementById('greet-name');
+  greetId = document.getElementById("greet-name");
   if (currentName && greetId) {
     greetId.innerHTML = `${currentName}`;
   }
@@ -44,8 +45,8 @@ function loadAccountName() {
  */
 function noMemberLink() {
   if (notAMember) {
-    document.getElementById('navbar-links').classList.add('d-none');
-    document.getElementById('help-account-box').classList.add('d-none');
+    document.getElementById("navbar-links").classList.add("d-none");
+    document.getElementById("help-account-box").classList.add("d-none");
   }
 }
 
@@ -55,7 +56,7 @@ function noMemberLink() {
  */
 function changeNavbarColor() {
   if (icon) {
-    document.getElementById(`${icon}`).classList.add('background-color');
+    document.getElementById(`${icon}`).classList.add("background-color");
   }
 }
 
@@ -65,7 +66,7 @@ function changeNavbarColor() {
  * Otherwise, it hides the pop-up box by removing its content.
  */
 function renderPopUp() {
-  let popUpBox = document.getElementById('headline-pop-up-container');
+  let popUpBox = document.getElementById("headline-pop-up-container");
   togglePopUp = !togglePopUp;
   if (togglePopUp) {
     popUpBox.innerHTML = `
@@ -76,13 +77,13 @@ function renderPopUp() {
       <a href="../index.html">Log out</a>
     </div>`;
     setTimeout(() => {
-      document.getElementById('headline-pop-up').className += ' active';
+      document.getElementById("headline-pop-up").className += " active";
     }, 10);
   } else {
-    let popUp = document.getElementById('headline-pop-up');
+    let popUp = document.getElementById("headline-pop-up");
     if (popUp) {
-      popUp.className = 'headline-pop-up';
-      setTimeout(() => popUpBox.innerHTML = '', 500);
+      popUp.className = "headline-pop-up";
+      setTimeout(() => (popUpBox.innerHTML = ""), 500);
     }
   }
 }
@@ -131,7 +132,7 @@ function sendTolegalNoticeFromNavbar() {
 
 /**
  * Generates a random hexadecimal color code.
- * 
+ *
  * @returns {string} A random color in hexadecimal format (e.g., "#a1b2c3").
  */
 function getRandomColor() {
@@ -142,12 +143,12 @@ function getRandomColor() {
 
 /**
  * Extracts the initials from a full name.
- * 
+ *
  * @param {string} name - The full name of the contact.
  * @returns {Array<string>} An array containing the initials of the first and last name.
  */
 function getContactInitials(name) {
-  let namesArray = name.trim().split(' ');
+  let namesArray = name.trim().split(" ");
   let lastName = namesArray[namesArray.length - 1];
   let firstName = namesArray[0];
   let initialFirst = firstName.charAt(0).toUpperCase();
@@ -157,10 +158,9 @@ function getContactInitials(name) {
 
 /**
  * Stops the propagation of an event.
- * 
+ *
  * @param {Event} event - The event to stop propagation for.
  */
 function stopPropagation(event) {
   event.stopPropagation();
 }
-

@@ -10,24 +10,22 @@ let amounts = {};
 async function loadSummary() {
   let values = await loadTasks();
   filterStatus(values)
-  await loadAccounts();
   setToDoNumbers();
   setDoneNumbers();
   setUrgent();
   setTaskInProgress();
   setAwaitFeedback();
-  setTaskInBoard();
   getGreeting();
 }
 
-function filterStatus(values) {
+async function filterStatus(values) {
   setTaskInBoard(values.length);
   amounts.todo = values.filter((t) => t.status === "todo").length;
   amounts.awaitfeedback = values.filter((t) => t.status === "awaitfeedback").length;
   amounts.inprogress = values.filter((t) => t.status === "inprogress").length;
   amounts.done = values.filter((t) => t.status === "done").length;
   amounts.urgent = values.filter((t) => t.prio === "urgent").length;
-  updateStatus(amounts);
+  await updateStatus(amounts);
 }
 
 /**

@@ -5,7 +5,7 @@ let currentUser = {};
  * Starts the login animation by calling `startLogInAnimation`.
  */
 function start() {
-  createStatusAmount();
+  // createStatusAmount();
   startLogInAnimation();
   let remember = localStorage.getItem("remember-me");
   let checkbox = document.getElementById("remember-me-box");
@@ -212,7 +212,7 @@ function getInputValues(contactName, contactEmail, newPassword, repeated_passwor
     password: newPassword,
     repeated_password: repeated_password,
   };
-  pushData(inputData);
+  registerUser(inputData);
 }
 
 /**
@@ -241,7 +241,7 @@ function getRandomColor() {
  */
 function comparePasswords(newName, newEmail, newPassword, checkNewPassword) {
   if (newPassword === checkNewPassword) {
-    postNewAccount(newName, newEmail, newPassword);
+    postNewAccount(newName, newEmail, newPassword, currentUser);
   } else {
     document.getElementById("check-new-password").classList.add("border-color-red");
     renderWrongPassword();

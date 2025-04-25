@@ -135,7 +135,7 @@ function getInputValues(event) {
     isUser: false,
     color: getRandomColor(),
   };
-  pushData(inputData);
+  pushContact(inputData);
   closeAddContactDialog();
 }
 
