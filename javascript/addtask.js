@@ -42,6 +42,7 @@ function onload() {
 }
 
 async function getCurentUser() {
+  
   let response = await fetch(BASE_URL + "curent-user");
   res = await response.json();
   currentUser = res[0];

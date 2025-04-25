@@ -7,6 +7,7 @@ const TOKEN = localStorage.getItem("token");
  * Starts the login animation by calling `startLogInAnimation`.
  */
 function start() {
+  createStatusAmount();
   startLogInAnimation();
   let remember = localStorage.getItem("remember-me");
   let checkbox = document.getElementById("remember-me-box");
@@ -17,6 +18,21 @@ function start() {
     checkbox.checked = false;
     deleteToken();
   }
+}
+
+async function createStatusAmount() {
+  let amounts = {
+    awaitfeedback: 0,
+    done: 0,
+    inprogress: 0,
+    todo: 0,
+    urgent: 0,
+  };
+  fetch(BASE_URL + "Status/1/", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(amounts),
+  });
 }
 
 function checkRememberMe() {
@@ -52,7 +68,7 @@ function startLogInAnimation() {
 function logIn(event) {
   event.preventDefault();
   accounts = [];
-  checkUserData();
+  loginUser();
 }
 
 /**
@@ -94,7 +110,7 @@ async function postCurrentUser(userName, userEmail, token, userid) {
  * Redirects to the summary page if successful, otherwise shows an error.
  * @param {Array} accounts - An array of user account objects.
  */
-async function checkUserData() {
+async function loginUser() {
   let userEmail = document.getElementById("user-email").value;
   let userPassword = document.getElementById("user-password").value;
   // let user = accounts.find(a => a.email == userEmail && a.password == userPassword);
@@ -180,49 +196,74 @@ function changeInputType(inputID, spanID) {
   }
 }
 
-/**
- * Logs in as a guest and redirects to the summary page.
- */
-async function logInAsGuest() {
-  guestLogin();
+async function createGuest() {
+  const res = await fetch(`${BASE_URL}registration/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: "Guest",
+      email: "guest@guest.de",
+      password: "guestlogin",
+      repeated_password: "guestlogin",
+    }),
+  });
 
-  // await setNoCurrentUser();s
-  // window.location.href = "./documents/summary.html";
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    console.error("Guest registration failed:", errData);
+    throw new Error(`Registration failed (${res.status})`);
+  }
 }
 
-async function guestLogin() {
-  let currentUser = {};
+/**
+ * Try to log in as guest. If login returns a 400,
+ * create the guest and retry once.
+ */
+async function guestLogin(retried = false) {
+  const res = await fetch(`${BASE_URL}login/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: "guest@guest.de",
+      password: "guestlogin",
+    }),
+  });
 
-  try {
-    let user = await fetch(BASE_URL + "login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "guest@guest.de",
-        password: "guestlogin",
-      }),
-    });
-    if (user) {
-      currentUser = await user.json();
-      localStorage.setItem("token", currentUser.token);
-      closeAddContactDialog();
-      initialize();
+  // If Django returns 400 (bad creds), create guest then retry
+  if (!res.ok) {
+    if (!retried) {
+      console.warn("Guest login failed; creating guest account…");
+      await createGuest();
+      return guestLogin(true);
+    } else {
+      // Already retried once — bail out
+      throw new Error(`Guest login still failing: ${res.status}`);
     }
-  } catch (error) {
-    console.log("Error pushing data:", error);
   }
 
-  if (!currentUser.non_field_errors) {
-    let currentAccountName = currentUser.username;
-    let currentEmail = currentUser.email;
-    let currentToken = currentUser.token;
-    await postCurrentUser(currentAccountName, currentEmail, currentToken, currentUser.user);
-    window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentAccountName)}`;
-  } else {
-    document.getElementById("user-email").classList.add("border-color-red");
-    document.getElementById("user-password").classList.add("border-color-red");
+  // Success path
+  const currentUser = await res.json();
+  localStorage.setItem("token", currentUser.token);
+  await postCurrentUser(
+    currentUser.username,
+    currentUser.email,
+    currentUser.token,
+    currentUser.user
+  );
+  postNewAccount(currentUser.username, currentUser.email);
+  window.location.href = `./documents/summary.html?name=${encodeURIComponent(
+    currentUser.username
+  )}`;
+}
+
+/**
+ * Entry point you wire up to your “Log in as guest” button.
+ */
+async function logInAsGuest() {
+  try {
+    await guestLogin();
+  } catch (err) {
+    console.error("Unable to log in as guest:", err);
     renderWrongLogIn();
   }
 }
@@ -298,9 +339,8 @@ function addNewUser(event) {
   let newEmail = document.getElementById("new-email").value;
   let newPassword = document.getElementById("new-password").value;
   let checkNewPassword = document.getElementById("check-new-password").value;
-  
-  getInputValues(newName, newEmail, newPassword, checkNewPassword);
 
+  getInputValues(newName, newEmail, newPassword, checkNewPassword);
 }
 
 /**
@@ -393,8 +433,6 @@ function sendTolegalNotice() {
  * @param {string} newPassword - The password of the new account.
  */
 async function postNewAccount(newName, newEmail) {
-  console.log(currentUser.token);
-  debugger;
   await fetch(BASE_URL + "contacts/", {
     method: "POST",
     headers: {
