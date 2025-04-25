@@ -1,7 +1,5 @@
-let BASE_URL = "http://127.0.0.1:8000/api/";
-// let BASE_URL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/accounts.json"
+
 let currentUser = {};
-const TOKEN = localStorage.getItem("token");
 
 /**
  * Starts the login animation by calling `startLogInAnimation`.
@@ -20,20 +18,6 @@ function start() {
   }
 }
 
-async function createStatusAmount() {
-  let amounts = {
-    awaitfeedback: 0,
-    done: 0,
-    inprogress: 0,
-    todo: 0,
-    urgent: 0,
-  };
-  fetch(BASE_URL + "Status/1/", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(amounts),
-  });
-}
 
 function checkRememberMe() {
   let checkbox = document.getElementById("remember-me-box");
@@ -77,20 +61,7 @@ function logIn(event) {
  * @param {string} userEmail - The email of the user.
  * @throws {Error} Throws an error if the network request fails.
  */
-async function postCurrentUser(userName, userEmail, token, userid) {
-  try {
-    const response = await fetch(currentUserURL + "1/", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nameIn: `${userName}`, emailIn: `${userEmail}`, token: `${token}`, user: `${userid}` }),
-    });
-    if (!response.ok) {
-      throw new Error("Error posting data");
-    }
-  } catch (error) {
-    console.error("Error posting current user:", error);
-  }
-}
+
 
 /**
  * Loads user accounts from the server and checks user data.
@@ -104,50 +75,6 @@ async function postCurrentUser(userName, userEmail, token, userid) {
 //     })
 //     .catch((error) => console.log("Error fetching data:", error));
 // }
-
-/**
- * Checks the user data against the provided accounts and logs in the user if valid.
- * Redirects to the summary page if successful, otherwise shows an error.
- * @param {Array} accounts - An array of user account objects.
- */
-async function loginUser() {
-  let userEmail = document.getElementById("user-email").value;
-  let userPassword = document.getElementById("user-password").value;
-  // let user = accounts.find(a => a.email == userEmail && a.password == userPassword);
-
-  try {
-    let user = await fetch(BASE_URL + "login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: userEmail,
-        password: userPassword,
-      }),
-    });
-    if (user.status == 200) {
-      currentUser = await user.json();
-      let currentAccountName = currentUser.username;
-      let currentEmail = currentUser.email;
-      let currentToken = currentUser.token;
-
-      await postCurrentUser(currentAccountName, currentEmail, currentToken, currentUser.user);
-      window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentAccountName)}`;
-      localStorage.setItem("token", currentUser.token);
-
-      closeAddContactDialog();
-      initialize();
-    } else {
-      document.getElementById("user-email").classList.add("border-color-red");
-      document.getElementById("user-password").classList.add("border-color-red");
-      renderWrongLogIn();
-      return;
-    }
-  } catch (error) {
-    console.log("Error pushing data:", error);
-  }
-}
 
 /**
  * Renders an error message for incorrect login attempts.
@@ -196,65 +123,12 @@ function changeInputType(inputID, spanID) {
   }
 }
 
-async function createGuest() {
-  const res = await fetch(`${BASE_URL}registration/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: "Guest",
-      email: "guest@guest.de",
-      password: "guestlogin",
-      repeated_password: "guestlogin",
-    }),
-  });
 
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    console.error("Guest registration failed:", errData);
-    throw new Error(`Registration failed (${res.status})`);
-  }
-}
 
 /**
  * Try to log in as guest. If login returns a 400,
  * create the guest and retry once.
  */
-async function guestLogin(retried = false) {
-  const res = await fetch(`${BASE_URL}login/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: "guest@guest.de",
-      password: "guestlogin",
-    }),
-  });
-
-  // If Django returns 400 (bad creds), create guest then retry
-  if (!res.ok) {
-    if (!retried) {
-      console.warn("Guest login failed; creating guest account…");
-      await createGuest();
-      return guestLogin(true);
-    } else {
-      // Already retried once — bail out
-      throw new Error(`Guest login still failing: ${res.status}`);
-    }
-  }
-
-  // Success path
-  const currentUser = await res.json();
-  localStorage.setItem("token", currentUser.token);
-  await postCurrentUser(
-    currentUser.username,
-    currentUser.email,
-    currentUser.token,
-    currentUser.user
-  );
-  postNewAccount(currentUser.username, currentUser.email);
-  window.location.href = `./documents/summary.html?name=${encodeURIComponent(
-    currentUser.username
-  )}`;
-}
 
 /**
  * Entry point you wire up to your “Log in as guest” button.
@@ -272,24 +146,6 @@ async function logInAsGuest() {
  * Sets the current user to 'Guest' and posts this information to the server.
  * @throws {Error} Throws an error if the network request fails.
  */
-async function setNoCurrentUser() {
-  let userName = "Guest";
-  if (userName) {
-    document.getElementById("wrong-log-in").classList.add("d-none");
-  }
-  try {
-    const response = await fetch(currentUserURL + "1/", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nameIn: `${userName}`, emailIn: "" }),
-    });
-    if (!response.ok) {
-      throw new Error("Error posting data");
-    }
-  } catch (error) {
-    console.error("Error posting no current user:", error);
-  }
-}
 
 /**
  * Loads the sign-up form by hiding the login form and displaying the sign-up form.
@@ -364,25 +220,7 @@ function getInputValues(contactName, contactEmail, newPassword, repeated_passwor
  * @param {Object} inputData - The contact data to be sent.
  * @throws {Error} Throws an error if the network request fails.
  */
-async function pushData(inputData) {
-  try {
-    let response = await fetch(BASE_URL + "registration/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputData),
-    });
-    currentUser = await response.json();
-    if (!response.ok) {
-      throw new Error("Error pushing data");
-    }
-    postNewAccount(currentUser.username, currentUser.email);
-    initialize();
-  } catch (error) {
-    console.log("Error pushing data:", error);
-  }
-}
+
 
 /**
  * Generates a random color in hexadecimal format.
@@ -432,28 +270,6 @@ function sendTolegalNotice() {
  * @param {string} newEmail - The email of the new account.
  * @param {string} newPassword - The password of the new account.
  */
-async function postNewAccount(newName, newEmail) {
-  await fetch(BASE_URL + "contacts/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: currentUser.token ? `Token ${currentUser.token}` : "",
-    },
-
-    body: JSON.stringify({
-      nameIn: `${newName}`,
-      emailIn: `${newEmail}`,
-      phoneIn: "0",
-      isUser: true,
-      color: "blue",
-      user: [+currentUser.user],
-    }),
-  });
-  renderSuccessfully();
-  setTimeout(() => {
-    window.location.href = "./index.html";
-  }, 2000);
-}
 
 /**
  * Displays a success message indicating that the user has signed up successfully.

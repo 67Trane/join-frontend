@@ -14,8 +14,6 @@ let tasks = {
   inits: "",
 };
 
-const TOKEN = localStorage.getItem("token");
-
 /**
  * Initializes the page by loading contacts and setting up the dropdown.
  */
@@ -26,23 +24,8 @@ function onload() {
 }
 
 // let BASE_URL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/";
-let BASE_URL = "http://127.0.0.1:8000/api/";
 
-/**
- * Loads contacts from the server and renders them.
- */
-async function loadContacts() {
-  await fetch(BASE_URL + "contacts/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => renderContacts(result))
-    .catch((error) => console.log(error));
-}
+
 
 /**
  * Extracts the initials from a contact's name.
@@ -335,21 +318,6 @@ function requiredFieldsCheck() {
   }
 }
 
-/**
- * Updates the task data on the server.
- */
-function updateServer() {
-  let cardId = document.getElementById("deliver-cardId").innerHTML;
-  tasks.id = cardId;
-  fetch(BASE_URL + "addTask/" + cardId + "/", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-    body: JSON.stringify(tasks),
-  });
-}
 
 /**
  * Gathers all task information and updates the server.

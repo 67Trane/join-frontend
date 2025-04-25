@@ -1,4 +1,4 @@
-let Status = "http://127.0.0.1:8000/api/Status/";
+
 let amounts = {};
 
 /**
@@ -20,49 +20,14 @@ async function loadSummary() {
   getGreeting();
 }
 
-async function loadTasks() {
 
-  await fetch(BASE_URL + "addTask/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      let values = result && typeof result === "object" ? Object.values(result) : "";
-      setTaskInBoard(values.length);
-      amounts.todo = values.filter((t) => t.status === "todo").length;
-      amounts.awaitfeedback = values.filter((t) => t.status === "awaitfeedback").length;
-      amounts.inprogress = values.filter((t) => t.status === "inprogress").length;
-      amounts.done = values.filter((t) => t.status === "done").length;
-      amounts.urgent = values.filter((t) => t.prio === "urgent").length;
-      updateStatus(amounts);
-    });
-}
 
-async function updateStatus(nr) {
-  fetch(BASE_URL + "Status/1/", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(nr),
-  });
-}
 
 /**
  * Fetches account data from the server and stores it in the `amounts` variable.
  * @async
  * @throws {Error} Throws an error if the network request fails.
  */
-async function loadAccounts() {
-  await fetch(Status)
-    .then((response) => response.json())
-    .then((result) => {
-      amounts = result[0];
-    })
-    .catch((error) => console.log("Error fetching data:", error));
-}
 
 /**
  * Displays a greeting message based on the current time of day.

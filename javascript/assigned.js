@@ -1,44 +1,6 @@
-/**
- * @file Task Management Functions - Handles fetching, updating, and deleting task assignments from the Firebase database.
- */
 
 let taskDb = [];
 let currentTaskId;
-const TOKEN = localStorage.getItem("token");
-
-/**
- * Fetches tasks from the Firebase database and populates the `taskDb` array.
- *
- * @async
- * @function getTasks
- * @param {string} path - The path to the Firebase database endpoint.
- * @returns {Promise<void>} - A promise that resolves when tasks are fetched and added to `taskDb`.
- */
-async function getTasks(path) {
-  let taskArray = [];
-  
-  try {
-    let response = await fetch(baseUrl + path, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: TOKEN ? `Token ${TOKEN}` : "",
-      },
-    });
-    let data = await response.json();
-    if (data) {
-      taskArray = Object.entries(data).map(([key, value]) => {
-        return {
-          firebaseid: key,
-          ...value,
-        };
-      });
-      taskDb.push(...taskArray);
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
 
 /**
  * Deletes a contact assignment from all tasks where the contact is assigned.

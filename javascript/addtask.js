@@ -1,7 +1,6 @@
 /** @constant {string} */
 // let BASE_URL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/";
-let BASE_URL = "http://127.0.0.1:8000/api/";
-const TOKEN = localStorage.getItem("token");
+
 
 /**
  * Global task object to store task information.
@@ -41,60 +40,10 @@ function onload() {
   init();
 }
 
-async function getCurentUser() {
-  
-  let response = await fetch(BASE_URL + "curent-user");
-  res = await response.json();
-  currentUser = res[0];
-}
 
-/**
- * Sends task information to the server to save it.
- */
-function postInfos() {
-  tasks.user.push(currentUser.user)
-  try {
-    fetch(BASE_URL + "addTask/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: TOKEN ? `Token ${TOKEN}` : "",
-      },
-      body: JSON.stringify({
-        title: tasks.title,
-        description: tasks.description,
-        assignedto: tasks.assignedto,
-        date: tasks.date,
-        prio: tasks.prio,
-        category: tasks.category,
-        subtask: tasks.subtask,
-        status: section,
-        color: `${tasks.color}`,
-        inits: tasks.inits,
-        user: tasks.user
-      }),
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
 
-/**
- * Loads contacts from the server and passes them for rendering.
- */
-function loadContacts() {
-  
-  fetch(BASE_URL + "contacts/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => renderContacts(result))
-    .catch((error) => console.log(error));
-}
+
+
 
 /**
  * Extracts the initials of a contact.

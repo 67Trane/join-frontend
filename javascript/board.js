@@ -1,9 +1,4 @@
-/**
- * Base URL for the Firebase Realtime Database.
-/** @constant {string} */
-// let BASE_URL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/";
-let BASE_URL = "http://127.0.0.1:8000/api/"
-const TOKEN = localStorage.getItem("token");
+
 
 /**
  * Array of all tasks.
@@ -28,44 +23,14 @@ window.clickedCardId;
  */
 function initBoard() {
   includeHTML();
-  loadTasks();
+  loadTasks2();
   init();
 }
 
-/**
- * Updates the task on the server.
- * @param {string} task - The task ID.
- * @param {Object} alltask - The task object to update.
- */
-function updateServer(task, alltask) {
-  fetch(BASE_URL + "addTask/" + task + "/", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-    body: JSON.stringify(alltask),
-  }); 
-}
 
 /**
  * Loads tasks from the server and processes them.
  */
-function loadTasks() {
-  
-  fetch(BASE_URL + "addTask/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      let values = result && typeof result === "object" ? Object.values(result) : "";
-      checkTask(values);
-    });
-}
 
 /**
  * Separates subtasks from a string.

@@ -38,16 +38,6 @@ function helpAmount() {
     return amount;
   }
   
-  /**
-   * Uploads the amounts object to the server.
-   */
-  function uploadAmount() {
-    fetch(BASE_URL + "Status/1/", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(amounts),
-    });
-  }
 
   
 

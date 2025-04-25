@@ -1,19 +1,4 @@
-/**
- * Fetches the current user's data from the server and renders the user's name.
- * The function retrieves the current user's information from the specified URL and then
- * passes the result to the `renderUserName` function for display.
- * 
- * @async
- * @throws {Error} Throws an error if the network request fails.
- */
-function loadUserName() {
-  fetch(currentUserURL)
-    .then((response) => response.json())
-    .then((result) => {
-      renderUserName(result[0]);
-    })
-    .catch((error) => console.log('Error fetching datas:', error));
-}
+
 
 /**
  * Renders the user's name in the header by displaying the first letter of the name.
