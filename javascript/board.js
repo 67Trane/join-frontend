@@ -1,5 +1,3 @@
-
-
 /**
  * Array of all tasks.
  * @type {Array<Object>}
@@ -21,16 +19,12 @@ window.clickedCardId;
 /**
  * Initializes the board by including HTML components and loading tasks.
  */
-function initBoard() {
+async function initBoard() {
   includeHTML();
-  loadTasks2();
+  let loadedTasks = await loadTasks();
+  checkTask(loadedTasks);
   init();
 }
-
-
-/**
- * Loads tasks from the server and processes them.
- */
 
 /**
  * Separates subtasks from a string.
@@ -50,7 +44,7 @@ function initBoard() {
  * @param {Array<string>} keys - The task IDs.
  * @param {Array<Object>} values - The task objects.
  */
-function checkTask( values) {
+function checkTask(values) {
   tasks = [];
   for (let i = 0; i < values.length; i++) {
     tasks.push(values[i]);
@@ -82,7 +76,9 @@ function renderTask() {
   sections.forEach((sectionId) => {
     let section = document.getElementById(sectionId);
     let ticketCards = section.getElementsByClassName("ticket-card");
-    while (ticketCards.length > 0) {ticketCards[0].remove();}
+    while (ticketCards.length > 0) {
+      ticketCards[0].remove();
+    }
     renderHelper(sectionId);
   });
   emptySection();
@@ -97,9 +93,15 @@ function renderHelper(section) {
   for (let i = 0; i < allTasks.length; i++) {
     let category = getCategory(allTasks[i].category);
     let cleaned = isEmpty(allTasks[i]);
-    if (cleaned.description == false) {allTasks[i].description = "";}
+    if (cleaned.description == false) {
+      allTasks[i].description = "";
+    }
     let prio;
-    if (!cleaned.prio == false) {prio = getPrio(i, allTasks);} else {prio = "noprio.svg";}
+    if (!cleaned.prio == false) {
+      prio = getPrio(i, allTasks);
+    } else {
+      prio = "noprio.svg";
+    }
     let checked = 0;
     let count;
     let subtaskslength;
@@ -107,18 +109,32 @@ function renderHelper(section) {
       checked = subtaskChecked(i, allTasks[i]);
       count = getCheckedSubtasks(allTasks[i]);
       subtaskslength = Object.values(allTasks[i].subtask);
-    } else {subtaskslength = [];}
-    if (cleaned.color == false) {allTasks[i].color = "";}
+    } else {
+      subtaskslength = [];
+    }
+    if (cleaned.color == false) {
+      allTasks[i].color = "";
+    }
 
-    document.getElementById(`${section}-card`).innerHTML += renderToDos(allTasks,subtaskslength.length,i,category,prio,checked);
+    document.getElementById(`${section}-card`).innerHTML += renderToDos(
+      allTasks,
+      subtaskslength.length,
+      i,
+      category,
+      prio,
+      checked
+    );
     let inits = getInitails(i, allTasks);
     for (let j = 0; j < inits.length; j++) {
       let contact = document.getElementById(`contact-images${allTasks[i].id}`);
       let colors = getColors(i, allTasks);
       contact.innerHTML += renderContactsImages(inits[j], colors, j);
     }
-    if (!subtaskslength.length == 0) {renderProgressBar(count, subtaskslength.length, allTasks[i].id);
-    } else {document.getElementById(`progress-bar-section${allTasks[i].id}`).classList.add("d-none");}
+    if (!subtaskslength.length == 0) {
+      renderProgressBar(count, subtaskslength.length, allTasks[i].id);
+    } else {
+      document.getElementById(`progress-bar-section${allTasks[i].id}`).classList.add("d-none");
+    }
     limitContactImgs(allTasks[i].id);
   }
 }
@@ -222,8 +238,12 @@ function getInitails(i, allTasks) {
     if (typeof allTasks[i].assignedto === "object") {
       let contactt = JSON.stringify(allTasks[i].assignedto);
       contact = contactt.replaceAll('"', "").replaceAll("[", "").replaceAll("]", "");
-    } else {contact = allTasks[i].assignedto;}
-  } else {contact = "";}
+    } else {
+      contact = allTasks[i].assignedto;
+    }
+  } else {
+    contact = "";
+  }
   if (!contact == "") {
     let contacts = contact.split(",");
     for (let id in contacts) {
@@ -236,7 +256,6 @@ function getInitails(i, allTasks) {
   } else {
     return [];
   }
-  
 }
 
 /**

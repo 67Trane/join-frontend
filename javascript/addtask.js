@@ -40,11 +40,6 @@ function onload() {
   init();
 }
 
-
-
-
-
-
 /**
  * Extracts the initials of a contact.
  * @param {string} contacts - The full name of the contact.

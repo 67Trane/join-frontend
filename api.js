@@ -144,9 +144,8 @@ async function getData(path) {
   }
 }
 
-async function updateServer(path, id, payload) {
-  const url = `${BASE_URL}${path}/${id}/`;
-
+async function updateTask(id, payload) {
+  const url = `${BASE_URL}addTask/${id}/`;
   await fetch(url, {
     method: "PUT",
     headers: {
@@ -157,53 +156,50 @@ async function updateServer(path, id, payload) {
   });
 }
 
-/**
- * Updates the task data on the server.
- */
-async function updateServer() {
-  let cardId = document.getElementById("deliver-cardId").innerHTML;
-  tasks.id = cardId;
+// /**
+//  * Updates the task data on the server.
+//  */
+// async function updateServer() {
+//   await fetch(BASE_URL + "addTask/" + cardId + "/", {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
+//     },
+//     body: JSON.stringify(tasks),
+//   });
+// }
 
-  await fetch(BASE_URL + "addTask/" + cardId + "/", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-    body: JSON.stringify(tasks),
-  });
-}
+// /**
+//  * Updates the server with the provided subtask status.
+//  *
+//  * @param {Object} task - The subtask object to update on the server.
+//  */
+// async function updateServer(task) {
+//   try {
+//     await fetch(BASE_URL + "addTask/" + clickedCardId + "/", {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: TOKEN ? `Token ${TOKEN}` : "",
+//       },
+//       body: JSON.stringify(task),
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-/**
- * Updates the server with the provided subtask status.
- *
- * @param {Object} task - The subtask object to update on the server.
- */
-async function updateServer(task) {
-  try {
-    await fetch(BASE_URL + "addTask/" + clickedCardId + "/", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: TOKEN ? `Token ${TOKEN}` : "",
-      },
-      body: JSON.stringify(task),
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function updateServer(task, alltask) {
-  await fetch(BASE_URL + "addTask/" + task + "/", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-    body: JSON.stringify(alltask),
-  });
-}
+// async function updateServer(task, alltask) {
+//   await fetch(BASE_URL + "addTask/" + task + "/", {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
+//     },
+//     body: JSON.stringify(alltask),
+//   });
+// }
 
 /**
  * Deletes a task from the server.
@@ -231,20 +227,37 @@ async function uploadAmount() {
   });
 }
 
-async function loadTasks2() {
-  await fetch(BASE_URL + "addTask/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      let values = result && typeof result === "object" ? Object.values(result) : "";
-      checkTask(values);
+async function loadTasks() {
+  try {
+    let response = await fetch(BASE_URL + "addTask/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
     });
+    let data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
+
+// async function loadTasks2() {
+//   await fetch(BASE_URL + "addTask/", {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: TOKEN ? `Token ${TOKEN}` : "",
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((result) => {
+//       let values = result && typeof result === "object" ? Object.values(result) : "";
+      
+//       checkTask(values);
+//     });
+// }
 
 async function getCurrentUser() {
   try {
@@ -603,27 +616,6 @@ async function postNewAccount(newName, newEmail) {
   setTimeout(() => {
     window.location.href = "./index.html";
   }, 2000);
-}
-
-async function loadTasks() {
-  await fetch(BASE_URL + "addTask/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      let values = result && typeof result === "object" ? Object.values(result) : "";
-      setTaskInBoard(values.length);
-      amounts.todo = values.filter((t) => t.status === "todo").length;
-      amounts.awaitfeedback = values.filter((t) => t.status === "awaitfeedback").length;
-      amounts.inprogress = values.filter((t) => t.status === "inprogress").length;
-      amounts.done = values.filter((t) => t.status === "done").length;
-      amounts.urgent = values.filter((t) => t.prio === "urgent").length;
-      updateStatus(amounts);
-    });
 }
 
 async function updateStatus(nr) {

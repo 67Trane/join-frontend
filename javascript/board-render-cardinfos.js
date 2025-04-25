@@ -80,7 +80,6 @@ function getAllSubtasks(card, iframeDocument) {
   let boardCardContent = sectionsElement.parentElement;
   if (!card.subtask[0].name == "") {
     for (let i = 0; i < card.subtask.length; i++) {
-      
       let checked = ifChecked(card, i);
       sectionsElement.innerHTML += subtasksHTML(i, card.subtask[i].name, card.subtask.length, checked, card);
     }
@@ -121,23 +120,28 @@ function getAssignedTo(card, iframeDocument) {
     let contact = card.assignedto;
 
     let contactss = contact.split(",");
+
     for (let id in contacts) {
+      const fullName = contacts[id].trim();
+      if (!fullName) {
+        continue;
+      }
       let name = contactss[id].split(" ");
       let firstinit = name[0][0];
       let second = name[1] ? name[1][0] : "";
       inits.push([firstinit.toUpperCase(), second.toUpperCase()]);
-    }
 
-    if (typeof card.color === "object") {
-      let newcolor = JSON.stringify(card.color);
-      let reuslt = newcolor.replaceAll("[", "").replaceAll("]", "");
-      card.color = reuslt;
-    }
-    let color = card.color.match(/rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)/g);
+      if (typeof card.color === "object") {
+        let newcolor = JSON.stringify(card.color);
+        let reuslt = newcolor.replaceAll("[", "").replaceAll("]", "");
+        card.color = reuslt;
+      }
+      let color = card.color.match(/rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)/g);
 
-    for (let i = 0; i < contacts.length; i++) {
-      let cleanInits = inits[i].join().replace(",", "");
-      iframeDocument.getElementById("assigned-to").innerHTML += contactsHTML(contacts[i], cleanInits, color[i]);
+      for (let i = 0; i < contacts.length; i++) {
+        let cleanInits = inits[i].join().replace(",", "");
+        iframeDocument.getElementById("assigned-to").innerHTML += contactsHTML(contacts[i], cleanInits, color[i]);
+      }
     }
   }
 }
@@ -223,14 +227,17 @@ function setPrio(card, iframeDocument) {
  * Closes a window or modal.
  * @param {string} card - The ID of the card or modal to close.
  */
-function closeWindow(card) {
+async function closeWindow(card) {
   let addtask = document.getElementById(card);
   let background = document.getElementById("background-grey");
+
   setTimeout(() => {
     background.classList.add("d-none");
     addtask.remove();
-    loadTasks();
+    
   }, 100);
+  tasks = loadTasks();
+  window.location.reload()
 }
 
 /**
@@ -310,7 +317,7 @@ function emptySection() {
  * @param {string} id - The task ID.
  */
 function renderProgressBar(count, length, id) {
-    let progressBar = document.getElementById(`filler-${id}`);
-    let result = (count / length) * 100;
-    progressBar.style.width = `${result}%`;
-  }
+  let progressBar = document.getElementById(`filler-${id}`);
+  let result = (count / length) * 100;
+  progressBar.style.width = `${result}%`;
+}

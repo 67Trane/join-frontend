@@ -1,4 +1,3 @@
-
 let amounts = {};
 
 /**
@@ -9,8 +8,9 @@ let amounts = {};
  * @async
  */
 async function loadSummary() {
-  await loadTasks();
-  await loadAccounts()
+  let values = await loadTasks();
+  filterStatus(values)
+  await loadAccounts();
   setToDoNumbers();
   setDoneNumbers();
   setUrgent();
@@ -20,8 +20,15 @@ async function loadSummary() {
   getGreeting();
 }
 
-
-
+function filterStatus(values) {
+  setTaskInBoard(values.length);
+  amounts.todo = values.filter((t) => t.status === "todo").length;
+  amounts.awaitfeedback = values.filter((t) => t.status === "awaitfeedback").length;
+  amounts.inprogress = values.filter((t) => t.status === "inprogress").length;
+  amounts.done = values.filter((t) => t.status === "done").length;
+  amounts.urgent = values.filter((t) => t.prio === "urgent").length;
+  updateStatus(amounts);
+}
 
 /**
  * Fetches account data from the server and stores it in the `amounts` variable.

@@ -26,7 +26,7 @@ function boardCardSubtaskChecked(id) {
           task.assignedto = newassigned;
         }
         task.subtask[id].status = "done";
-        updateServer(task);
+        updateTask(cardId, task);
       }
     });
   } else {
@@ -37,7 +37,7 @@ function boardCardSubtaskChecked(id) {
           task.assignedto = newassigned;
         }
         task.subtask[id].status = "inwork";
-        updateServer(task);
+        updateTask(cardId, task);
       }
     });
   }

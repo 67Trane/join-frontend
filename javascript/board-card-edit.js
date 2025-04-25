@@ -25,8 +25,6 @@ function onload() {
 
 // let BASE_URL = "https://join-318-default-rtdb.europe-west1.firebasedatabase.app/";
 
-
-
 /**
  * Extracts the initials from a contact's name.
  *
@@ -318,7 +316,6 @@ function requiredFieldsCheck() {
   }
 }
 
-
 /**
  * Gathers all task information and updates the server.
  */
@@ -329,7 +326,9 @@ function getAllInfos() {
   getSubtasks();
   getDate();
   if (requiredFieldsCheck() == true) {
-    updateServer();
+    let cardId = document.getElementById("deliver-cardId").innerHTML;
+    tasks.id = cardId;
+    updateTask(cardId, tasks);
     successDisplay();
     setTimeout(() => {
       parent.closeWindow("edit-card");

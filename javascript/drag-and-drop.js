@@ -8,7 +8,7 @@ function moveTo(status) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == currentDraggedElement) {
       tasks[i]["status"] = status;
-      updateServer(currentDraggedElement, tasks[i]);
+      updateTask(currentDraggedElement, tasks[i]);
     }
   }
   removeHighlightDragArea();
