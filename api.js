@@ -80,19 +80,33 @@ async function postInfos() {
  * Loads contacts from the server and passes them for rendering.
  */
 async function loadContacts() {
-  await fetch(BASE_URL + "contacts/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: TOKEN ? `Token ${TOKEN}` : "",
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      renderContacts(result);
+  try {
+    let res = await fetch(BASE_URL + "contacts/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("server error");
+    }
+    const result = await res.json();
+
+    if (typeof renderContacts !== "function") {
       return result;
-    })
-    .catch((error) => console.log(error));
+    }
+
+    const didRender = renderContacts(result);
+    if (!didRender) {
+      return result;
+    }
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 async function getData(path) {
@@ -461,7 +475,13 @@ async function guestLogin(retried = false) {
   const currentUser = await res.json();
   localStorage.setItem("token", currentUser.token);
   await postCurrentUser(currentUser.username, currentUser.email, currentUser.token, currentUser.user);
-  postNewAccount(currentUser.username, currentUser.email, currentUser);
+  let contacts = await loadContacts();
+  const existing = contacts.find((contact) => {
+    return contact.emailIn.trim().toLowerCase() == currentUser.email.trim().toLowerCase();
+  });
+  if (!existing) {
+    postNewAccount(currentUser.username, currentUser.email, currentUser);
+  } 
   window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentUser.username)}`;
 }
 
