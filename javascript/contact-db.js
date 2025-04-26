@@ -52,23 +52,19 @@ async function updateContact(event) {
   const updatedData = getUpdatedContactData();
   if (!updatedData) return;
 
-  try {
-    const success = await sendUpdateRequest(currentId, updatedData);
-    if (success) {
-      updateLocalDatabase(currentId, updatedData);
-      closeEditContactDialog();
-      await initializeContactList();
-      selectElement(currentId);
-      updateDetailView(updatedData);
+  const success = await sendUpdateRequest(currentId, updatedData);
+  if (updatedData.isUser) {
+    await updateAccount();
+  }
 
-      if (updatedData.isUser) {
-        await updateAccount();
-      }
-    } else {
-      alert("Error updating contact.");
-    }
-  } catch (error) {
-    alert(error.message);
+  if (success) {
+    updateLocalDatabase(currentId, updatedData);
+    closeEditContactDialog();
+    await initializeContactList();
+    selectElement(currentId);
+    updateDetailView(updatedData);
+  } else {
+    console.error("Error updating contact.");
   }
 }
 

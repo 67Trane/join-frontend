@@ -55,26 +55,6 @@ function logIn(event) {
   loginUser();
 }
 
-/**
- * Posts the current user's name and email to the server.
- * @param {string} userName - The name of the user.
- * @param {string} userEmail - The email of the user.
- * @throws {Error} Throws an error if the network request fails.
- */
-
-
-/**
- * Loads user accounts from the server and checks user data.
- */
-// function loadAccounts() {
-//   fetch(BASE_URL)
-//     .then((response) => response.json())
-//     .then((result) => {
-//       const accounts = Object.values(result);
-//       checkUserData(accounts);
-//     })
-//     .catch((error) => console.log("Error fetching data:", error));
-// }
 
 /**
  * Renders an error message for incorrect login attempts.

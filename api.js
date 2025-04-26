@@ -1,5 +1,5 @@
 const BASE_URL = "http://127.0.0.1:8000/api/";
-const TOKEN = localStorage.getItem("token");
+let TOKEN = localStorage.getItem("token");
 
 async function loginUser() {
   let userEmail = document.getElementById("user-email").value;
@@ -21,13 +21,13 @@ async function loginUser() {
       let currentAccountName = currentUser.username;
       let currentEmail = currentUser.email;
       let currentToken = currentUser.token;
-
       await postCurrentUser(currentAccountName, currentEmail, currentToken, currentUser.user);
-      window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentAccountName)}`;
       localStorage.setItem("token", currentUser.token);
-
-      closeAddContactDialog();
-      initialize();
+      let exist = await isUserInContactList(currentUser);
+      window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentAccountName)}`;
+      if (!exist) {
+        await postNewAccount(currentUser.username, currentUser.email, currentUser);
+      }
     } else {
       document.getElementById("user-email").classList.add("border-color-red");
       document.getElementById("user-password").classList.add("border-color-red");
@@ -43,12 +43,26 @@ async function getCurentUser() {
   let response = await fetch(BASE_URL + "curent-user");
   res = await response.json();
   currentUser = res[0];
+  return currentUser;
+}
+
+async function isUserInContactList(user) {
+  let contacts = await loadContacts();
+  const existing = contacts.find((contact) => {
+    return contact.emailIn.trim().toLowerCase() == user.email.trim().toLowerCase();
+  });
+  if (!existing) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 /**
  * Sends task information to the server to save it.
  */
 async function postInfos() {
+  // asdasdasdasd
   tasks.user.push(currentUser.user);
   try {
     await fetch(BASE_URL + "addTask/", {
@@ -80,6 +94,7 @@ async function postInfos() {
  * Loads contacts from the server and passes them for rendering.
  */
 async function loadContacts() {
+  TOKEN = localStorage.getItem("token");
   try {
     let res = await fetch(BASE_URL + "contacts/", {
       method: "GET",
@@ -92,20 +107,16 @@ async function loadContacts() {
       throw new Error("server error");
     }
     const result = await res.json();
-
     if (typeof renderContacts !== "function") {
       return result;
     }
-
     const didRender = renderContacts(result);
     if (!didRender) {
       return result;
     }
-
     return result;
   } catch (error) {
     console.error(error);
-    throw error;
   }
 }
 
@@ -363,12 +374,15 @@ async function getUserData(path) {
  * @returns {Promise<boolean>} True if the update was successful, false otherwise.
  */
 async function updateAccount() {
+  const updatedData = getUpdatedContactData();
+  let user = await getCurentUser();
+  updatedData["user"] = user.user;
   try {
-    const updatedData = getUpdatedContactData();
-    let response = await fetch(`${BASE_URL}curent-user/`, {
+    let response = await fetch(`${BASE_URL}curent-user/1/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
       body: JSON.stringify(updatedData),
     });
@@ -399,21 +413,6 @@ function loadUserName() {
     })
     .catch((error) => console.log("Error fetching datas:", error));
 }
-
-// async function createStatusAmount() {
-//   let amounts = {
-//     awaitfeedback: 0,
-//     done: 0,
-//     inprogress: 0,
-//     todo: 0,
-//     urgent: 0,
-//   };
-//   fetch(BASE_URL + "Status/1/", {
-//     method: "PUT",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(amounts),
-//   });
-// }
 
 async function postCurrentUser(userName, userEmail, token, userid) {
   try {
@@ -470,18 +469,15 @@ async function guestLogin(retried = false) {
       throw new Error(`Guest login still failing: ${res.status}`);
     }
   }
-
   // Success path
   const currentUser = await res.json();
   localStorage.setItem("token", currentUser.token);
   await postCurrentUser(currentUser.username, currentUser.email, currentUser.token, currentUser.user);
-  let contacts = await loadContacts();
-  const existing = contacts.find((contact) => {
-    return contact.emailIn.trim().toLowerCase() == currentUser.email.trim().toLowerCase();
-  });
-  if (!existing) {
-    postNewAccount(currentUser.username, currentUser.email, currentUser);
-  } 
+  let exist = await isUserInContactList(currentUser);
+  if (!exist) {
+    await postNewAccount(currentUser.username, currentUser.email, currentUser);
+  }
+
   window.location.href = `./documents/summary.html?name=${encodeURIComponent(currentUser.username)}`;
 }
 
@@ -494,12 +490,11 @@ async function registerUser(inputData) {
       },
       body: JSON.stringify(inputData),
     });
-    currentUser = await response.json();
+    result = await response.json();
     if (!response.ok) {
       throw new Error("Error pushing data");
     }
-    postNewAccount(currentUser.username, currentUser.email, currentUser);
-    initialize();
+    postNewAccount(result.username, result.email, result);
   } catch (error) {
     console.log("Error pushing data:", error);
   }
@@ -522,7 +517,6 @@ async function postNewAccount(newName, newEmail, newUser) {
         user: [+newUser.user],
       }),
     });
-    debugger;
     renderSuccessfully();
     setTimeout(() => {
       window.location.href = "./index.html";
@@ -530,7 +524,6 @@ async function postNewAccount(newName, newEmail, newUser) {
   } catch (error) {
     console.error(error);
   }
-  debugger;
 }
 
 async function updateStatus(nr) {
