@@ -171,7 +171,6 @@ function addNewUser(event) {
   let checkNewPassword = document.getElementById("check-new-password").value;
   let wrongEmail = document.getElementById("wrong-email");
   let wrongName = document.getElementById("wrong-name");
-
   if (!emailValidation(newEmail.value)) {
     wrongEmail.classList.remove("d-none");
     newEmail.classList.add("border-color-red");
@@ -179,7 +178,6 @@ function addNewUser(event) {
     wrongEmail.classList.add("d-none");
     newEmail.classList.remove("border-color-red");
   }
-
   if (!nameValidation(newName.value)) {
     wrongName.classList.remove("d-none");
     newName.classList.add("border-color-red");
@@ -187,9 +185,7 @@ function addNewUser(event) {
     wrongName.classList.add("d-none");
     newName.classList.remove("border-color-red");
   }
-
   comparePasswords(newPassword, checkNewPassword);
-
   if (
     nameValidation(newName.value) &&
     emailValidation(newEmail.value) &&
