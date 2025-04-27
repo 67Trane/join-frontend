@@ -108,42 +108,42 @@ function ifChecked(card, i) {
  * @param {Document} iframeDocument - The document of the iframe.
  */
 function getAssignedTo(card, iframeDocument) {
-  if (!card.assignedto == false) {
-    if (typeof card.assignedto === "object") {
-      let newcard = JSON.stringify(card.assignedto);
-      let reuslt = newcard.replaceAll("[", "").replaceAll("]", "").replaceAll('"', "");
-      card.assignedto = reuslt;
-    }
-    let contacts = card.assignedto.split(",");
+  if (!card.assignedto) return;
+  const assignedStr = Array.isArray(card.assignedto) ? card.assignedto.join(",") : String(card.assignedto);
 
-    let inits = [];
-    let contact = card.assignedto;
+  const contacts = assignedStr
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
-    let contactss = contact.split(",");
-
-    for (let id in contacts) {
-      const fullName = contacts[id].trim();
-      if (!fullName) {
-        continue;
-      }
-      let name = contactss[id].split(" ");
-      let firstinit = name[0][0];
-      let second = name[1] ? name[1][0] : "";
-      inits.push([firstinit.toUpperCase(), second.toUpperCase()]);
-
-      if (typeof card.color === "object") {
-        let newcolor = JSON.stringify(card.color);
-        let reuslt = newcolor.replaceAll("[", "").replaceAll("]", "");
-        card.color = reuslt;
-      }
-      let color = card.color.match(/rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)/g);
-
-      for (let i = 0; i < contacts.length; i++) {
-        let cleanInits = inits[i].join().replace(",", "");
-        iframeDocument.getElementById("assigned-to").innerHTML += contactsHTML(contacts[i], cleanInits, color[i]);
-      }
+  let rawColors;
+  if (Array.isArray(card.color)) {
+    rawColors = card.color;
+  } else {
+    try {
+      const parsed = JSON.parse(card.color);
+      rawColors = Array.isArray(parsed) ? parsed : [card.color];
+    } catch {
+      rawColors = String(card.color).split(/\s*,\s*/);
     }
   }
+
+  const colors = rawColors.map((c) => {
+    const m = String(c).match(/rgb\(\d{1,3},\s*\d{1,3},\s*\d{1,3}\)/);
+    return m ? m[0] : null;
+  });
+
+  const container = iframeDocument.getElementById("assigned-to");
+  container.innerHTML = "";
+
+  contacts.forEach((fullName, i) => {
+    const parts = fullName.split(/\s+/).filter(Boolean);
+    const firstInit = (parts[0] && parts[0][0].toUpperCase()) || "";
+    const secondInit = (parts[1] && parts[1][0].toUpperCase()) || "";
+    const cleanInits = firstInit + secondInit;
+    const col = colors[i] || "blue";
+    container.innerHTML += contactsHTML(fullName, cleanInits, col);
+  });
 }
 
 /**
@@ -234,10 +234,9 @@ async function closeWindow(card) {
   setTimeout(() => {
     background.classList.add("d-none");
     addtask.remove();
-    
   }, 100);
   tasks = loadTasks();
-  window.location.reload()
+  window.location.reload();
 }
 
 /**

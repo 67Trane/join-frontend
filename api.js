@@ -347,7 +347,7 @@ async function postNewAccount(newName, newEmail, newUser) {
         emailIn: newEmail,
         phoneIn: "0",
         isUser: true,
-        color: "blue",
+        color: "rgb(0, 0, 255)",
         user: [Number(newUser.user)],
       }),
     });

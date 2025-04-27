@@ -54,6 +54,7 @@ function renderToDos(task, subtasklength, i, categoryColor, prio, checked) {
  * @returns {string} HTML string for the contact initials.
  */
 function renderContactsImages(inits, allcolors, j) {
+  allcolors = allcolors ?? "blue";
   return `<div class="contact-initals" id="contact-initals1" style="background-color: ${allcolors[j]};">
                                   <span>${inits[0]}${inits[1]}</span>
                                 </div>`;
