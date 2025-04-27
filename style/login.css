@@ -13,6 +13,11 @@
   align-items: center; 
 }
 
+.wrong-email {
+  color: red;
+  padding-bottom: 10px;
+}
+
 
 .overlay.hidden {
   opacity: 0; 

@@ -1,4 +1,3 @@
-
 let currentUser = {};
 
 /**
@@ -17,7 +16,6 @@ function start() {
     deleteToken();
   }
 }
-
 
 function checkRememberMe() {
   let checkbox = document.getElementById("remember-me-box");
@@ -55,13 +53,11 @@ function logIn(event) {
   loginUser();
 }
 
-
 /**
  * Renders an error message for incorrect login attempts.
  */
 function renderWrongLogIn() {
-  document.getElementById("wrong-log-in").innerHTML = `
-  Check your email and password. Please try again.`;
+  document.getElementById("wrong-log-in").innerHTML = `Check your email and password. Please try again.`;
 }
 
 /**
@@ -102,8 +98,6 @@ function changeInputType(inputID, spanID) {
     <img onclick="changeInputType('${inputID}', '${spanID}')" src="./assets/img/visibility_off.svg" alt="open-eye">`;
   }
 }
-
-
 
 /**
  * Try to log in as guest. If login returns a 400,
@@ -171,45 +165,48 @@ function BackToLogIn() {
  */
 function addNewUser(event) {
   event.preventDefault();
-  let newName = document.getElementById("new-name").value;
-  let newEmail = document.getElementById("new-email").value;
+  let newName = document.getElementById("new-name");
+  let newEmail = document.getElementById("new-email");
   let newPassword = document.getElementById("new-password").value;
   let checkNewPassword = document.getElementById("check-new-password").value;
+  let wrongEmail = document.getElementById("wrong-email");
+  let wrongName = document.getElementById("wrong-name");
 
-  getInputValues(newName, newEmail, newPassword, checkNewPassword);
+  if (!emailValidation(newEmail.value)) {
+    wrongEmail.classList.remove("d-none");
+    newEmail.classList.add("border-color-red");
+  } else {
+    wrongEmail.classList.add("d-none");
+    newEmail.classList.remove("border-color-red");
+  }
+
+  if (!nameValidation(newName.value)) {
+    wrongName.classList.remove("d-none");
+    newName.classList.add("border-color-red");
+  } else {
+    wrongName.classList.add("d-none");
+    newName.classList.remove("border-color-red");
+  }
+
+  comparePasswords(newPassword, checkNewPassword);
+
+  if (
+    nameValidation(newName.value) &&
+    emailValidation(newEmail.value) &&
+    comparePasswords(newPassword, checkNewPassword)
+  ) {
+    getInputValues(newName.value, newEmail.value, newPassword, checkNewPassword);
+  }
 }
 
-/**
- * Prepares and sends the input values for a new contact to the server.
- * @param {string} contactName - The name of the new contact.
- * @param {string} contactEmail - The email of the new contact.
- * @param {string} newPassword - The password of the new contact.
- */
-function getInputValues(contactName, contactEmail, newPassword, repeated_password) {
-  inputData = {
-    username: contactName,
-    email: contactEmail,
-    password: newPassword,
-    repeated_password: repeated_password,
-  };
-  registerUser(inputData);
+function nameValidation(name) {
+  const nameRegex = /^[A-Za-z]+$/;
+  return nameRegex.test(name);
 }
 
-/**
- * Sends the contact data to the server.
- * @param {Object} inputData - The contact data to be sent.
- * @throws {Error} Throws an error if the network request fails.
- */
-
-
-/**
- * Generates a random color in hexadecimal format.
- * @returns {string} The generated color in hexadecimal format.
- */
-function getRandomColor() {
-  let randomNumber = Math.floor(Math.random() * 16777215);
-  let randomColor = "#" + randomNumber.toString(16).padStart(6, "0");
-  return randomColor;
+function emailValidation(email) {
+  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  return emailRegex.test(email);
 }
 
 /**
@@ -219,13 +216,46 @@ function getRandomColor() {
  * @param {string} newPassword - The password of the new user.
  * @param {string} checkNewPassword - The confirmed password to compare.
  */
-function comparePasswords(newName, newEmail, newPassword, checkNewPassword) {
+function comparePasswords(newPassword, checkNewPassword) {
   if (newPassword === checkNewPassword) {
-    postNewAccount(newName, newEmail, newPassword, currentUser);
+    return true;
   } else {
     document.getElementById("check-new-password").classList.add("border-color-red");
     renderWrongPassword();
+    return false;
   }
+}
+
+/**
+ * Prepares and sends the input values for a new contact to the server.
+ * @param {string} contactName - The name of the new contact.
+ * @param {string} contactEmail - The email of the new contact.
+ * @param {string} newPassword - The password of the new contact.
+ */
+async function getInputValues(contactName, contactEmail, newPassword, repeated_password) {
+  inputData = {
+    username: contactName,
+    email: contactEmail,
+    password: newPassword,
+    repeated_password: repeated_password,
+  };
+  await registerUser(inputData);
+}
+
+/**
+ * Sends the contact data to the server.
+ * @param {Object} inputData - The contact data to be sent.
+ * @throws {Error} Throws an error if the network request fails.
+ */
+
+/**
+ * Generates a random color in hexadecimal format.
+ * @returns {string} The generated color in hexadecimal format.
+ */
+function getRandomColor() {
+  let randomNumber = Math.floor(Math.random() * 16777215);
+  let randomColor = "#" + randomNumber.toString(16).padStart(6, "0");
+  return randomColor;
 }
 
 /**
@@ -281,7 +311,9 @@ function renderSignUpHTML() {
     <div class="border-bottom-log-in"></div>
     <form onsubmit="addNewUser(event)">
       <input id="new-name" class="input-field name-input" type="text" required placeholder="Name" oninput="checkFormValidity()">
+      <small id="wrong-name" class="wrong-email d-none">Bitte gültigen Namen eingeben</small>
       <input id="new-email" class="input-field email-input" type="email" required placeholder="Email" oninput="checkFormValidity()">
+      <small id="wrong-email" class="wrong-email d-none">Bitte gültige Email-adresse eingeben</small>
       <div class="input-container">
         <input id="new-password" class="input-field password-input" type="password" minlength="6" required placeholder="Password" onkeyup="changePasswordIcon('new-password','span-password-icon')" oninput="checkFormValidity()">
         <span id="span-password-icon" class="password-eye-open d-none"></span>
