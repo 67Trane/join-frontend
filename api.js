@@ -30,12 +30,17 @@ async function loginUser() {
     const response = await fetch(`${BASE_URL}login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail, password: userPassword })
+      body: JSON.stringify({ email: userEmail, password: userPassword }),
     });
 
     if (response.status === 200) {
       const currentUser = await response.json();
-      const { username: currentAccountName, email: currentEmail, token: currentToken, user: currentUserId } = currentUser;
+      const {
+        username: currentAccountName,
+        email: currentEmail,
+        token: currentToken,
+        user: currentUserId,
+      } = currentUser;
 
       // Persist current user on server and locally
       await postCurrentUser(currentAccountName, currentEmail, currentToken, currentUserId);
@@ -64,7 +69,7 @@ async function loginUser() {
  * @returns {Promise<Object>} The first current user object from the response array.
  */
 async function getCurentUser() {
-  const response = await fetch(`${BASE_URL}curent-user`);
+  const response = await fetch(`${BASE_URL}curent-user/`);
   const res = await response.json();
   return res[0];
 }
@@ -78,7 +83,7 @@ async function getCurentUser() {
  */
 async function isUserInContactList(user) {
   const contacts = await loadContacts();
-  return contacts.some(contact => contact.emailIn.trim().toLowerCase() === user.email.trim().toLowerCase());
+  return contacts.some((contact) => contact.emailIn.trim().toLowerCase() === user.email.trim().toLowerCase());
 }
 
 /**
@@ -89,15 +94,15 @@ async function isUserInContactList(user) {
  * @returns {Promise<void>}
  */
 async function postInfos(tasks) {
-  tasks.user = [ /* ensure tasks.user includes currentUser.user */ ];
+  tasks.user = [currentUser.user];
   try {
     await fetch(`${BASE_URL}addTask/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
-      body: JSON.stringify(tasks)
+      body: JSON.stringify(tasks),
     });
   } catch (error) {
     console.error("Error posting task:", error);
@@ -117,8 +122,8 @@ async function loadContacts() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
-      }
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
     });
     if (!res.ok) throw new Error("Server error");
     const result = await res.json();
@@ -144,8 +149,8 @@ async function getData(path) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
-      }
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
     });
     return await response.json();
   } catch (error) {
@@ -167,9 +172,9 @@ async function updateTask(id, payload) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
   } catch (error) {
     console.error("Error updating task:", error);
@@ -186,8 +191,8 @@ function deleteFromServer(id) {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": TOKEN ? `Token ${TOKEN}` : ""
-    }
+      Authorization: TOKEN ? `Token ${TOKEN}` : "",
+    },
   }).catch(console.error);
 }
 
@@ -203,7 +208,7 @@ async function uploadAmount(amounts) {
     await fetch(`${BASE_URL}Status/1/`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(amounts)
+      body: JSON.stringify(amounts),
     });
   } catch (error) {
     console.error("Error uploading status:", error);
@@ -222,8 +227,8 @@ async function loadTasks() {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
-      }
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
     });
     return await response.json();
   } catch (error) {
@@ -246,7 +251,7 @@ async function postCurrentUser(userName, userEmail, token, userId) {
     const response = await fetch(`${BASE_URL}curent-user/1/`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nameIn: userName, emailIn: userEmail, token, user: userId })
+      body: JSON.stringify({ nameIn: userName, emailIn: userEmail, token, user: userId }),
     });
     if (!response.ok) throw new Error("Error posting current user");
   } catch (error) {
@@ -267,7 +272,7 @@ async function guestLogin(retried = false) {
     const res = await fetch(`${BASE_URL}login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: "guest@guest.de", password: "guestlogin" })
+      body: JSON.stringify({ email: "guest@guest.de", password: "guestlogin" }),
     });
 
     if (!res.ok) {
@@ -303,7 +308,7 @@ async function registerUser(inputData) {
     const response = await fetch(`${BASE_URL}registration/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(inputData)
+      body: JSON.stringify(inputData),
     });
     const result = await response.json();
     if (!response.ok) throw new Error("Error registering user");
@@ -328,7 +333,7 @@ async function postNewAccount(newName, newEmail, newUser) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": newUser.token ? `Token ${newUser.token}` : ""
+        Authorization: newUser.token ? `Token ${newUser.token}` : "",
       },
       body: JSON.stringify({
         nameIn: newName,
@@ -336,11 +341,11 @@ async function postNewAccount(newName, newEmail, newUser) {
         phoneIn: "0",
         isUser: true,
         color: "blue",
-        user: [Number(newUser.user)]
-      })
+        user: [Number(newUser.user)],
+      }),
     });
     renderSuccessfully();
-    setTimeout(() => window.location.href = "./index.html", 2000);
+    setTimeout(() => (window.location.href = "./index.html"), 2000);
   } catch (error) {
     console.error("Error adding new account:", error);
   }
@@ -359,8 +364,8 @@ async function deleteContact(contactId) {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
-      }
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
     });
     if (!response.ok) throw new Error("Error deleting contact");
     closeDetailDialog();
@@ -384,9 +389,9 @@ async function sendUpdateRequest(contactId, updatedData) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
-      body: JSON.stringify(updatedData)
+      body: JSON.stringify(updatedData),
     });
     return response.ok;
   } catch (error) {
@@ -409,9 +414,9 @@ async function sendUpdateTaskRequest(taskId, updatedData) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
-      body: JSON.stringify(updatedData)
+      body: JSON.stringify(updatedData),
     });
     return response.ok;
   } catch (error) {
@@ -455,9 +460,9 @@ async function updateAccount() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": TOKEN ? `Token ${TOKEN}` : ""
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
       },
-      body: JSON.stringify(updatedData)
+      body: JSON.stringify(updatedData),
     });
     return response.ok;
   } catch (error) {
@@ -473,9 +478,9 @@ async function updateAccount() {
  */
 function loadUserName() {
   fetch(`${BASE_URL}curent-user/`)
-    .then(response => response.json())
-    .then(result => renderUserName(result[0]))
-    .catch(error => console.error("Error fetching user name:", error));
+    .then((response) => response.json())
+    .then((result) => renderUserName(result[0]))
+    .catch((error) => console.error("Error fetching user name:", error));
 }
 
 /**
@@ -492,12 +497,86 @@ async function createGuest() {
       username: "Guest",
       email: "guest@guest.de",
       password: "guestlogin",
-      repeated_password: "guestlogin"
-    })
+      repeated_password: "guestlogin",
+    }),
   });
   if (!res.ok) {
     const errData = await res.json().catch(() => ({}));
     console.error("Guest registration failed:", errData);
     throw new Error(`Registration failed (${res.status})`);
   }
+}
+
+
+/**
+ * Sends a new contact object to the server.
+ * @async
+ * @function pushContact
+ * @param {Object} inputData - Contact data (nameIn, emailIn, phoneIn, color).
+ * @returns {Promise<void>}
+ */
+async function pushContact(inputData) {
+  inputData["user"] = [userDb[0].user];
+  try {
+    let response = await fetch(BASE_URL + "contacts/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
+      body: JSON.stringify(inputData),
+    });
+    if (!response.ok) {
+      throw new Error("Error pushing data");
+    }
+
+    let responseData = await response.json();
+    let newContactId = responseData.name;
+    closeAddContactDialog();
+    await initializeContactList();
+    selectElement(newContactId);
+    const initials = getContactInitials(inputData.nameIn);
+    if (window.innerWidth >= 1024) {
+      openDetailReferenceDesk(
+        inputData.nameIn,
+        inputData.emailIn,
+        inputData.phoneIn,
+        newContactId,
+        initials[0],
+        initials[1],
+        inputData.color,
+        false
+      );
+    } else {
+      openDetailReferenceMob(
+        inputData.nameIn,
+        inputData.emailIn,
+        inputData.phoneIn,
+        newContactId,
+        initials[0],
+        initials[1],
+        inputData.color,
+        false
+      );
+    }
+    showSuccessPopup();
+  } catch (error) {
+    console.error("Error pushing data:", error);
+  }
+}
+
+
+/**
+ * Updates the status resource on the server by numerical payload.
+ * @async
+ * @function updateStatus
+ * @param {Object} nr - Payload representing status counts or values.
+ * @returns {Promise<void>}
+ */
+async function updateStatus(nr) {
+  await fetch(BASE_URL + "Status/1/", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(nr),
+  });
 }

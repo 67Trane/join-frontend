@@ -50,7 +50,6 @@ function checkTask(values) {
     tasks.push(values[i]);
   }
   renderTask();
-  getAmountsOfAllSections();
 }
 
 /**

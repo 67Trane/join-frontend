@@ -30,8 +30,8 @@ let currentUser;
 /**
  * Loads initial data and initializes the application.
  */
-function onload() {
-  getCurentUser();
+async function onload() {
+  currentUser = await getCurentUser();
   loadContacts();
   includeHTML();
   dropDown();
@@ -316,7 +316,7 @@ function getAllInfos() {
   getSubtasks();
   if (requiredFieldsCheck() == true) {
     checkStatus();
-    postInfos();
+    postInfos(tasks);
     if (checkWindowLocation()) {
       successDisplay();
       setTimeout(() => {
