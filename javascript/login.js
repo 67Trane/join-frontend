@@ -229,13 +229,27 @@ function comparePasswords(newPassword, checkNewPassword) {
  * @param {string} newPassword - The password of the new contact.
  */
 async function getInputValues(contactName, contactEmail, newPassword, repeated_password) {
+  let emailField = document.getElementById("new-email");
+  let existEmail = document.getElementById("email-exist");
+  let nameField = document.getElementById("new-name");
+  let existName = document.getElementById("name-exist");
+
   inputData = {
     username: contactName,
     email: contactEmail,
     password: newPassword,
     repeated_password: repeated_password,
   };
-  await registerUser(inputData);
+
+  let feedback = await registerUser(inputData);
+
+  if (feedback == "name exist already") {
+    nameField.classList.add("border-color-red");
+    existName.classList.remove("d-none");
+  } else if (feedback == "email exist already") {
+    emailField.classList.add("border-color-red");
+    existEmail.classList.remove("d-none");
+  }
 }
 
 /**
@@ -308,8 +322,10 @@ function renderSignUpHTML() {
     <form onsubmit="addNewUser(event)">
       <input id="new-name" class="input-field name-input" type="text" required placeholder="Name" oninput="checkFormValidity()">
       <small id="wrong-name" class="wrong-email d-none">Bitte gültigen Namen eingeben</small>
+      <small id="name-exist" class="wrong-email d-none">Name bereits vergeben</small>
       <input id="new-email" class="input-field email-input" type="email" required placeholder="Email" oninput="checkFormValidity()">
       <small id="wrong-email" class="wrong-email d-none">Bitte gültige Email-adresse eingeben</small>
+      <small id="email-exist" class="wrong-email d-none">E-Mail bereits vergeben</small>
       <div class="input-container">
         <input id="new-password" class="input-field password-input" type="password" minlength="6" required placeholder="Password" onkeyup="changePasswordIcon('new-password','span-password-icon')" oninput="checkFormValidity()">
         <span id="span-password-icon" class="password-eye-open d-none"></span>

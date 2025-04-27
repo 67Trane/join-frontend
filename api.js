@@ -311,6 +311,16 @@ async function registerUser(inputData) {
       body: JSON.stringify(inputData),
     });
     const result = await response.json();
+    console.log(result)
+    debugger
+    if (result.username == 'A user with that username already exists.') {
+      return "name exist already"
+    }
+    if(result.email == 'Diese E-Mail ist bereits vergeben.') {
+      console.log("check")
+      return "email exist already"
+    }
+
     if (!response.ok) throw new Error("Error registering user");
     await postNewAccount(result.username, result.email, result);
   } catch (error) {
