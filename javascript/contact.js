@@ -137,6 +137,7 @@ function getInputValues(event) {
   };
   pushContact(inputData);
   closeAddContactDialog();
+  window.location.reload()
 }
 
 /**
