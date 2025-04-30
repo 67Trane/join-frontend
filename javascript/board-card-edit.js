@@ -319,21 +319,32 @@ function requiredFieldsCheck() {
 /**
  * Gathers all task information and updates the server.
  */
-function getAllInfos() {
+async function getAllInfos() {
   checkSubtaskIsOnEdit();
   getTitle();
   getDescription();
-  getSubtasks();
   getDate();
   if (requiredFieldsCheck() == true) {
     let cardId = document.getElementById("deliver-cardId").innerHTML;
     tasks.id = cardId;
-    updateTask(cardId, tasks);
+    let oldTask = await loadOneTask(cardId);
+    let newSubtask = compareSubtasks(oldTask.subtask);
+    tasks.subtask = newSubtask;
+    await updateTask(cardId, tasks);
     successDisplay();
     setTimeout(() => {
       parent.closeWindow("edit-card");
     }, 1000);
   }
+}
+
+function compareSubtasks(oldSubtaskList) {
+  const lis = document.getElementById("subtasklist").getElementsByTagName("li");
+  const newSubtaskList = Array.from(lis).map((li, i) => ({
+    name: li.textContent.trim(),
+    status: oldSubtaskList[i]?.status ?? "inwork",
+  }));
+  return newSubtaskList;
 }
 
 function checkSubtaskIsOnEdit() {

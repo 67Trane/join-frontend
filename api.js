@@ -236,6 +236,21 @@ async function loadTasks() {
   }
 }
 
+async function loadOneTask(id) {
+  try {
+    const response = await fetch(`${BASE_URL}addTask/${id}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: TOKEN ? `Token ${TOKEN}` : "",
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error loading tasks:", error);
+  }
+}
+
 /**
  * Posts or updates the current user record on the server.
  * @async
