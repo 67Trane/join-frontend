@@ -1,5 +1,3 @@
-
-
 const params = new URLSearchParams(window.location.search);
 let currentName = "";
 const icon = params.get("icon");
@@ -15,6 +13,7 @@ let togglePopUp = false;
  * @throws {Error} Throws an error if including HTML components fails.
  */
 function init() {
+  requireAuth();
   includeHTML()
     .then(() => {
       noMemberLink();
@@ -35,6 +34,14 @@ function loadAccountName() {
   greetId = document.getElementById("greet-name");
   if (currentName && greetId) {
     greetId.innerHTML = `${currentName}`;
+  }
+}
+
+function requireAuth() {
+  const page = window.location.pathname.split("/").pop();
+  const protectedPages = ["addtask.html", "board.html", "summary.html", "contacts.html"];
+  if (protectedPages.includes(page) && !TOKEN) {
+    window.location.replace("../index.html");
   }
 }
 
